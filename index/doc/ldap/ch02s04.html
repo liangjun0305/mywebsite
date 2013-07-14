@@ -1,0 +1,31 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>4.&nbsp;&#23433;&#35013;mysql</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Postfix"><link rel="up" href="ch02.html" title="&#31532;&nbsp;2&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;&#23433;&#35013;"><link rel="prev" href="ch02s03.html" title="3.&nbsp;&#23433;&#35013;openssl"><link rel="next" href="ch02s05.html" title="5.&nbsp;&#23433;&#35013;apache httpd"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">4.&nbsp;&#23433;&#35013;mysql</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s03.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;2&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;&#23433;&#35013;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch02s05.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="4.&nbsp;&#23433;&#35013;mysql"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e115"></a>4.&nbsp;&#23433;&#35013;mysql</h2></div></div></div><pre class="programlisting">
+<span class="command"><strong>apt-get install libncurses5-dev</strong></span>
+</pre><p>&#39318;&#20808;&#23433;&#35013;mysql&#25152;&#20851;&#32852;&#21040;&#36719;&#20214;&#12290;</p><pre class="programlisting">
+<span class="command"><strong>groupadd mysql</strong></span>
+<span class="command"><strong>useradd -g mysql mysql</strong></span>
+<span class="command"><strong>tar zxvf mysql-5.1.42.tar.gz</strong></span>
+<span class="command"><strong>cd mysql-5.1.42</strong></span>
+<span class="command"><strong>./configure --prefix=/usr/local/mysql</strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>make install</strong></span>
+<span class="command"><strong>cp support-files/my-medium.cnf /etc/my.cnf</strong></span>
+<span class="command"><strong>cp support-files/mysql.server /etc/init.d/mysql</strong></span>
+<span class="command"><strong>chmod +x /etc/init.d/mysql</strong></span>
+<span class="command"><strong>cd /usr/local/mysql</strong></span>
+<span class="command"><strong>bin/mysql_install_db --user=mysql</strong></span>
+<span class="command"><strong>chown -R root  .</strong></span>
+<span class="command"><strong>chown -R mysql var</strong></span>
+<span class="command"><strong>chgrp -R mysql .</strong></span>
+<span class="command"><strong>/etc/init.d/mysql start</strong></span>
+<span class="command"><strong>ln -s /usr/local/mysql/lib/mysql/libmysqlclient.so.16 /usr/lib/</strong></span>
+</pre></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s03.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch02.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch02s05.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">3.&nbsp;&#23433;&#35013;openssl&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;5.&nbsp;&#23433;&#35013;apache httpd</td></tr></table></div></body></html>

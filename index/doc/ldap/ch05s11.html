@@ -1,0 +1,34 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>11.&nbsp;&#23433;&#35013;extmail</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Postfix"><link rel="up" href="ch05.html" title="&#31532;&nbsp;5&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;ldap&#35748;&#35777;&#23433;&#35013;"><link rel="prev" href="ch05s10.html" title="10.&nbsp;&#23433;&#35013;Courier imapd"><link rel="next" href="ch06.html" title="&#31532;&nbsp;6&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;ldap&#35748;&#35777;&#37197;&#32622;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">11.&nbsp;&#23433;&#35013;extmail</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s10.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;5&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;ldap&#35748;&#35777;&#23433;&#35013;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch06.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="11.&nbsp;&#23433;&#35013;extmail"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e1060"></a>11.&nbsp;&#23433;&#35013;extmail</h2></div></div></div><p>extmail&#26159;&#19968;&#20010;&#22522;&#20110;postfix&#30340;webmail&#36719;&#20214;&#12290;&#37324;&#38754;&#21253;&#21547;&#20102;&#19968;&#20010;webmail&#65288;extmail&#65289;&#21644;&#19968;&#20010;&#31649;&#29702;&#31243;&#24207;&#65288;extman&#65289;&#12290;</p><p>&#39318;&#20808;&#23433;&#35013;&#20960;&#20010;extmail&#29992;&#21040;&#30340;&#36719;&#20214;&#21253;</p><pre class="programlisting">
+<span class="command"><strong>apt-get install libgd-gd2-perl</strong></span>
+<span class="command"><strong>perl -MCPAN -e shell</strong></span>
+<span class="command"><strong>cpan&gt;install DBI</strong></span>
+<span class="command"><strong>cpan&gt;install DBD::mysql</strong></span>
+</pre><div class="note" title="&#27880;&#24847;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#27880;&#24847;]" src="themes/default/admon/note.png"></td><th align="left">&#27880;&#24847;</th></tr><tr><td align="left" valign="top">DBD::mysql&#23433;&#35013;&#21487;&#33021;&#19981;&#20250;&#25104;&#21151;&#65292;&#24212;&#20026;&#20182;&#38656;&#35201;mysql&#30340;&#30456;&#20851;&#24211;&#65292;&#38656;&#35201;&#25351;&#23450;&#36335;&#24452;&#65292;&#25152;&#20197;&#21487;&#20197;&#37319;&#29992;&#28304;&#30721;&#23433;&#35013;</td></tr></table></div><pre class="programlisting">
+<span class="command"><strong>cd /root/.cpan/sources/authors/id/C/CA/CAPTTOFU/</strong></span>
+<span class="command"><strong>tar zxvf DBD-mysql-4.013.tar.gz</strong></span>
+<span class="command"><strong>cd DBD-mysql-4.013</strong></span>
+<span class="command"><strong>perl Makefile.PL   --lib="-L/usr/local/mysql/lib/mysql  -lmysqlclient -lm -lz"&#12288;\</strong></span>
+<span class="command"><strong>--cflags="-I/usr/local/mysql/include/mysql" \</strong></span>
+<span class="command"><strong>--mysql_config=/usr/local/mysql/bin/mysql_config</strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>make install</strong></span>
+</pre><pre class="programlisting">
+<span class="command"><strong>cpan&gt;install Unix::Syslog</strong></span>
+</pre><p>&#23433;&#35013;extmail&#21644;extman</p><pre class="programlisting">
+<span class="command"><strong>tar zxvf extmail-1.2.tar.gz</strong></span>
+<span class="command"><strong>tar zxvf extman-1.1.tar.gz</strong></span>
+<span class="command"><strong>mkdir /usr/local/httpd/htdocs/extsuite</strong></span>
+<span class="command"><strong>mv extmail-1.2 /usr/local/httpd/htdocs/extsuite/extmail</strong></span>
+<span class="command"><strong>mv extman-1.1 /usr/local/httpd/htdocs/extsuite/extman</strong></span>
+<span class="command"><strong>cd /usr/local/httpd/htdocs/extsuite/extman/docs/</strong></span>
+</pre></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s10.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch06.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">10.&nbsp;&#23433;&#35013;Courier imapd&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;&#31532;&nbsp;6&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;ldap&#35748;&#35777;&#37197;&#32622;</td></tr></table></div></body></html>

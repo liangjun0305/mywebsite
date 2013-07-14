@@ -1,0 +1,115 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>&#31532;&nbsp;3&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;&#37197;&#32622;</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Postfix"><link rel="up" href="pt01.html" title="&#37096;&#20998;&nbsp;I.&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;"><link rel="prev" href="ch02s11.html" title="11.&nbsp;&#23433;&#35013;extmail"><link rel="next" href="ch03s02.html" title="2.&nbsp;&#37197;&#32622;apache"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">&#31532;&nbsp;3&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;&#37197;&#32622;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s11.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#37096;&#20998;&nbsp;I.&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch03s02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="chapter" title="&#31532;&nbsp;3&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;&#37197;&#32622;"><div class="titlepage"><div><div><h2 class="title"><a name="d0e460"></a>&#31532;&nbsp;3&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;&#37197;&#32622;</h2></div></div></div><div class="toc"><p><b>&#30446;&#24405;</b></p><dl><dt><span class="sect1"><a href="ch03.html#d0e463">1. &#37197;&#32622;postfix</a></span></dt><dt><span class="sect1"><a href="ch03s02.html">2. &#37197;&#32622;apache</a></span></dt><dt><span class="sect1"><a href="ch03s03.html">3. &#37197;&#32622;Courier imapd</a></span></dt><dt><span class="sect1"><a href="ch03s04.html">4. &#37197;&#32622;Courier imapd</a></span></dt><dt><span class="sect1"><a href="ch03s05.html">5. &#37197;&#32622;extmail&#21644;extman</a></span></dt></dl></div><div class="sect1" title="1.&nbsp;&#37197;&#32622;postfix"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e463"></a>1.&nbsp;&#37197;&#32622;postfix</h2></div></div></div><div class="sect2" title="1.1.&nbsp;&#24314;&#31435;&#37038;&#20214;&#23384;&#25918;&#30340;&#30446;&#24405;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e466"></a>1.1.&nbsp;&#24314;&#31435;&#37038;&#20214;&#23384;&#25918;&#30340;&#30446;&#24405;</h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>mkdir /home/vmail</strong></span>
+<span class="command"><strong>groupadd vmail -g 3000</strong></span>
+<span class="command"><strong>useradd vmail -u 3000 -g vmail -d /home/vmail -s  /sbin/nologin</strong></span>
+<span class="command"><strong>chown -R vmail:vmail /home/vmail</strong></span>
+</pre></div><div class="sect2" title="1.2.&nbsp;&#24314;&#31435;mysql&#25968;&#25454;&#24211;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e483"></a>1.2.&nbsp;&#24314;&#31435;mysql&#25968;&#25454;&#24211;</h3></div></div></div><p>extman&#20869;&#32622;&#20102;&#19968;&#20010;postfix&#30340;mysql&#25968;&#25454;&#24211;&#23454;&#20363;&#12290;&#23548;&#20837;&#65292;&#25913;&#25104;&#33258;&#24049;&#30340;&#22495;&#21517;&#21363;&#21487;&#12290;</p><pre class="programlisting">
+<span class="command"><strong>/usr/local/mysql/bin/mysql -u root -p &lt; /usr/local/httpd/htdocs/extsuite/extman/docs/extmail.sql</strong></span>
+<span class="command"><strong>/usr/local/mysql/bin/mysql -u root -p &lt; /usr/local/httpd/htdocs/extsuite/extman/docs/init.sql</strong></span>
+</pre><div class="note" title="&#27880;&#24847;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#27880;&#24847;]" src="themes/default/admon/note.png"></td><th align="left">&#27880;&#24847;</th></tr><tr><td align="left" valign="top">&#19978;&#36848;extman&#30340;&#25968;&#25454;&#24211;&#23454;&#20363;&#20013;&#24314;&#31435;&#20102;&#20960;&#20010;&#25968;&#25454;&#24211;&#29992;&#25143;&#65292;&#22914;&#26524;&#20320;&#30340;&#25968;&#25454;&#24211;&#22312;&#32593;&#32476;&#20013;&#20026;&#36824;&#26377;&#20854;&#20182;&#30340;&#24212;&#29992;&#25552;&#20379;&#26381;&#21153;&#65292;&#37027;&#20040;&#20986;&#20110;&#23433;&#20840;&#32771;&#34385;&#65292;&#35831;&#33258;&#34892;&#26356;&#25913;extmail.sql&#24314;&#31435;&#29992;&#25143;&#37096;&#20998;&#12290;</td></tr></table></div></div><div class="sect2" title="1.3.&nbsp;&#37197;&#32622;postfix&#20013;mysql&#30340;&#36873;&#39033;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e498"></a>1.3.&nbsp;&#37197;&#32622;postfix&#20013;mysql&#30340;&#36873;&#39033;</h3></div></div></div><p>&#21516;&#26679;&#65292;extman&#23558;&#36825;&#20123;&#37197;&#32622;&#25991;&#20214;&#20063;&#25552;&#20379;&#20102;&#65292;&#30452;&#25509;copy&#36807;&#21435;&#23601;&#21487;&#20197;&#20102;&#12290;</p><pre class="programlisting">
+<span class="command"><strong>cp /usr/local/httpd/htdocs/extsuite/extman/docs/mysql_virtual_* /etc/postfix/mysql/</strong></span>
+</pre></div><div class="sect2" title="1.4.&nbsp;&#37197;&#32622;postfix&#20013;smtp&#36890;&#36807;sasl&#36827;&#34892;&#35748;&#35777;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e508"></a>1.4.&nbsp;&#37197;&#32622;postfix&#20013;smtp&#36890;&#36807;sasl&#36827;&#34892;&#35748;&#35777;</h3></div></div></div><p>&#24314;&#31435;/usr/local/lib/sasl2/smtpd.conf&#36825;&#20010;&#25991;&#20214;</p><pre class="programlisting">
+<span class="command"><strong>touch /usr/local/lib/sasl2/smtpd.conf</strong></span>
+<span class="command"><strong>vi /usr/local/lib/sasl2/smtpd.conf</strong></span>
+</pre><pre class="screen">
+pwcheck_method: authdaemond
+log_level: 3
+mech_list: PLAIN LOGIN
+authdaemond_path:/usr/local/courier-authlib/var/spool/authdaemon/socket
+</pre><pre class="programlisting">
+<span class="command"><strong>chmod a+xr /usr/local/courier-authlib/var/spool/authdaemon</strong></span>
+</pre></div><div class="sect2" title="1.5.&nbsp;&#37197;&#32622;postfix&#20013;smtpTLS"><div class="titlepage"><div><div><h3 class="title"><a name="d0e528"></a>1.5.&nbsp;&#37197;&#32622;postfix&#20013;smtpTLS</h3></div></div></div><p>&#39318;&#20808;&#21046;&#20316;&#35777;&#20070;&#12290;</p><pre class="programlisting">
+<span class="command"><strong>cd /etc/postfix/</strong></span>
+<span class="command"><strong>mkdir certs</strong></span>
+<span class="command"><strong>cd certs</strong></span>
+<span class="command"><strong>cd certs</strong></span>
+<span class="command"><strong>cp /usr/local/ssl/misc/CA.pl .</strong></span>
+</pre><p>&#20462;&#25913;CA.pl&#25991;&#20214;&#65292;&#22914;&#19979;&#65292;&#22312;$REQ&#21069;&#38754;&#22686;&#21152;-nodes&#36873;&#39033;&#12290;</p><pre class="screen">
+       } elsif (/^-newcert$/) {
+            # create a certificate
+            system ("$REQ -new -nodes -x509 -keyout newkey.pem -out newcert.pem $DAYS");
+            $RET=$?;
+            print "Certificate is in newcert.pem, private key is in newkey.pem\n"
+        } elsif (/^-newreq$/) {
+            # create a certificate request
+            system ("$REQ -new -nodes  -keyout newkey.pem -out newreq.pem $DAYS");
+            $RET=$?;
+            print "Request is in newreq.pem, private key is in newkey.pem\n";
+</pre><p>&#20197;&#19979;&#21629;&#20196;&#23558;&#26159;&#21019;&#24314;&#35777;&#20070;&#30340;&#36807;&#31243;&#12290;</p><pre class="programlisting">
+<span class="command"><strong>./CA.pl -newca</strong></span>
+<span class="command"><strong>./CA.pl -newreq</strong></span>
+<span class="command"><strong>./CA.pl -sign</strong></span>
+<span class="command"><strong>cat newkey.pem &gt;&gt; newcert.pem</strong></span>
+<span class="command"><strong>rm -rf CA.pl  demoCA</strong></span>
+</pre></div><div class="sect2" title="1.6.&nbsp;&#37197;&#32622;postfix"><div class="titlepage"><div><div><h3 class="title"><a name="d0e573"></a>1.6.&nbsp;&#37197;&#32622;postfix</h3></div></div></div><p>&#20462;&#25913;main.cf&#30340;&#20869;&#23481;</p><pre class="programlisting">
+<span class="command"><strong>vi /etc/postfix/main.cf</strong></span>
+</pre><pre class="screen">
+############basic setup#######
+myhostname = mail.test.com
+mydomain = test.com
+myorigin = $mydomain
+#mydestination = test.com, $transport_maps
+local_recipient_maps = $alias_maps $virtual_mailbox_maps unix:passwd.byname
+home_mailbox = Maildir/
+#=====================MySQL=====================
+virtual_alias_maps = mysql:/etc/postfix/mysql/mysql_virtual_alias_maps.cf
+virtual_mailbox_domains = mysql:/etc/postfix/mysql/mysql_virtual_domains_maps.cf
+virtual_mailbox_maps = mysql:/etc/postfix/mysql/mysql_virtual_mailbox_maps.cf
+virtual_mailbox_base = /home/vmail
+virtual_mailbox_limit = 51200000
+virtual_minimum_uid = 3000
+virtual_transport = virtual
+virtual_uid_maps = static:3000
+virtual_gid_maps = static:3000
+#=====================Quota=====================
+virtual_create_maildirsize = yes
+virtual_mailbox_extended = yes
+virtual_mailbox_limit_maps = mysql:/etc/postfix/mysql/mysql_virtual_limit_maps.cf
+virtual_mailbox_limit_override = yes
+virtual_maildir_limit_message = Sorry, the user&#8217;s maildir has overdrawn his diskspace quota, please try again later.
+virtual_overquota_bounce = yes
+#virtual_trash_count=yes
+#virtual_trash_name=.Trash
+#====================SASL=====================
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_local_domain = $myhostname
+smtpd_sasl_security_options = noanonymous
+broken_sasl_auth_clients = yes
+smtpd_delay_reject=yes
+smtpd_recipient_restrictions = permit_mynetworks,permit_sasl_authenticated,permit_auth_destination,reject
+smtpd_client_restrictions = permit_sasl_authenticated,reject
+#===================smtp starttls============
+smtpd_use_tls = yes
+smtpd_tls_auth_only = no
+smtp_tls_key_file =  /etc/postfix/certs/newreq.pem
+smtpd_tls_cert_file =  /etc/postfix/certs/newcert.pem
+smtpd_tls_CAfile = /etc/postfix/certs/cacert.pem
+smtpd_tls_loglevel = 3
+################directory setup############
+readme_directory = no
+config_directory = /etc/postfix
+sendmail_path = /usr/sbin/sendmail
+html_directory = no
+setgid_group = postdrop
+command_directory = /usr/sbin
+manpage_directory = /usr/local/man
+daemon_directory = /usr/libexec/postfix
+newaliases_path = /usr/bin/newaliases
+mailq_path = /usr/bin/mailq
+queue_directory = /var/spool/postfix
+mail_owner = postfix
+unknown_local_recipient_reject_code = 550
+
+sample_directory = /etc/postfix
+data_directory = /var/lib/postfix
+</pre></div></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s11.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="pt01.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch03s02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">11.&nbsp;&#23433;&#35013;extmail&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;2.&nbsp;&#37197;&#32622;apache</td></tr></table></div></body></html>

@@ -1,0 +1,81 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>&#31532;&nbsp;3&nbsp;&#31456;&nbsp;&#26381;&#21153;&#37197;&#32622;</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Openldap &#39640;&#21487;&#29992;&#38598;&#32676;&#37197;&#32622;"><link rel="up" href="index.html" title="Openldap &#39640;&#21487;&#29992;&#38598;&#32676;&#37197;&#32622;"><link rel="prev" href="ch02s05.html" title="5.&nbsp;&#23433;&#35013;HA&#29615;&#22659;"><link rel="next" href="ch03s02.html" title="2.&nbsp;&#37197;&#32622;HA&#29615;&#22659;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">&#31532;&nbsp;3&nbsp;&#31456;&nbsp;&#26381;&#21153;&#37197;&#32622;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s05.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch03s02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="chapter" title="&#31532;&nbsp;3&nbsp;&#31456;&nbsp;&#26381;&#21153;&#37197;&#32622;"><div class="titlepage"><div><div><h2 class="title"><a name="d0e181"></a>&#31532;&nbsp;3&nbsp;&#31456;&nbsp;&#26381;&#21153;&#37197;&#32622;</h2></div></div></div><div class="toc"><p><b>&#30446;&#24405;</b></p><dl><dt><span class="sect1"><a href="ch03.html#d0e184">1. &#37197;&#32622;openldap</a></span></dt><dt><span class="sect1"><a href="ch03s02.html">2. &#37197;&#32622;HA&#29615;&#22659;</a></span></dt><dt><span class="sect1"><a href="ch03s03.html">3. &#37197;&#32622;pacemaker</a></span></dt></dl></div><div class="sect1" title="1.&nbsp;&#37197;&#32622;openldap"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e184"></a>1.&nbsp;&#37197;&#32622;openldap</h2></div></div></div><p>&#22312;ldap&#36825;&#20010;&#38598;&#32676;&#20013;,&#25105;&#20204;&#23558;&#37319;&#29992;openldap&#33258;&#24049;&#30340;&#21516;&#27493;&#26426;&#21046;&#65292;openldap&#30340;&#21516;&#27493;&#26426;&#21046;&#26159;&#23454;&#26102;&#21516;&#27493;&#65292;&#20851;&#20110;&#27492;&#21516;&#27493;&#30340;&#35814;&#32454;&#20449;&#24687;&#35831;&#21442;&#32771;:http://www.openldap.org/doc/admin24/replication.html</p><div class="sect2" title="1.1.&nbsp;&#37197;&#32622;openldap&#23494;&#30721;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e189"></a>1.1.&nbsp;&#37197;&#32622;openldap&#23494;&#30721;</h3></div></div></div><p>master&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/openldap/slapd.conf</strong></span><pre class="screen">database        bdb
+suffix          "dc=test,dc=com"
+checkpoint      1024    5
+cachesize       10000
+rootdn          "cn=Manager,dc=test,dc=com"
+rootpw          secret
+directory       /var/lib/ldap
+index   objectClass     eq
+</pre><p>slave&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/openldap/slapd.conf</strong></span><pre class="screen">database        bdb
+suffix          "dc=test,dc=com"
+checkpoint      1024    5
+cachesize       10000
+rootdn          "cn=Manager,dc=test,dc=com"
+rootpw          secret
+directory       /var/lib/ldap
+index   objectClass     eq
+</pre></div><div class="sect2" title="1.2.&nbsp;&#37197;&#32622;openldap&#21516;&#27493;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e204"></a>1.2.&nbsp;&#37197;&#32622;openldap&#21516;&#27493;</h3></div></div></div><p>master&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/openldap/slapd.conf</strong></span><pre class="screen">index entryCSN,entryUUID eq
+
+overlay syncprov
+syncprov-checkpoint 100 10
+syncprov-sessionlog 100
+
+serverID 001
+
+syncrepl rid=000
+ provider=ldap://10.0.0.2:389
+ type=refreshAndPersist
+ retry="60 +"
+ searchbase="dc=test,dc=com"
+ bindmethod=simple
+ binddn="cn=Manager,dc=test,dc=com"
+ credentials=secret
+ schemachecking=on
+mirrormode on
+</pre><p>slave&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/openldap/slapd.conf</strong></span><pre class="screen">index entryCSN,entryUUID eq
+
+overlay syncprov
+syncprov-checkpoint 100 10
+syncprov-sessionlog 100
+
+serverID 001
+
+syncrepl rid=000
+ provider=ldap://10.0.0.1:389
+ type=refreshAndPersist
+ retry="60 +"
+ searchbase="dc=test,dc=com"
+ bindmethod=simple
+ binddn="cn=Manager,dc=test,dc=com"
+ credentials=secret
+ schemachecking=on
+mirrormode on
+</pre></div><div class="sect2" title="1.3.&nbsp;&#27979;&#35797;openldap"><div class="titlepage"><div><div><h3 class="title"><a name="d0e219"></a>1.3.&nbsp;&#27979;&#35797;openldap</h3></div></div></div><p>&#21551;&#21160;ldap&#26381;&#21153;</p><span class="command"><strong>service ldap start</strong></span><p>&#35774;&#32622;ldap&#26381;&#21153;&#24320;&#26426;&#21551;&#21160;</p><span class="command"><strong>chkconfig ldap on</strong></span><p>&#25105;&#20204;&#26469;&#27979;&#35797;&#19968;&#19979;ldap&#30340;&#21516;&#27493;&#12290;</p><span class="command"><strong>chkconfig ldap on</strong></span><p>&#25105;&#20204;&#22312;master&#33410;&#28857;&#19978;&#28155;&#21152;ldap&#25968;&#25454;&#12290;&#26032;&#24314;ldapadmin.ldif&#25991;&#20214;&#12290;</p><p>master&#33410;&#28857;:</p><span class="command"><strong>vi ldapadmin.ldif</strong></span><pre class="screen">dn: dc=test,dc=com
+objectclass: dcObject
+objectclass: organization
+o: centerDB
+   </pre><p>&#20351;&#29992;&#19979;&#38754;&#21629;&#20196;&#23558;&#25968;&#25454;&#28155;&#21152;&#21040;ldap&#26381;&#21153;&#22120;&#20013;&#12290;</p><span class="command"><strong>ldapadd -D "cn=Manager,dc=test,dc=com" -x -W -f ldapadmin.ldif</strong></span><p>&#28982;&#21518;&#25105;&#20204;&#22312;master&#33410;&#28857;&#30475;&#30475;&#28155;&#21152;&#30340;&#25968;&#25454;&#12290;</p><p>master&#33410;&#28857;:</p><span class="command"><strong>ldapsearch -x -W -D "cn=Manager,dc=test,dc=com"  -h 10.0.0.1 -s base -b "dc=test,dc=com" "objectClass=*"</strong></span><pre class="screen">dn: dc=test,dc=com
+objectClass: dcObject
+objectClass: organization
+o: centerDB
+dc: test
+
+search: 2
+result: 0 Success</pre><p>&#25105;&#20204;&#20877;&#26469;&#30475;&#30475;slave&#33410;&#28857;&#36825;&#36793;&#12290;</p><p>slave&#33410;&#28857;:</p><span class="command"><strong>ldapsearch -x -W -D "cn=Manager,dc=test,dc=com"  -h 10.0.0.2 -s base -b "dc=test,dc=com" "objectClass=*"</strong></span><pre class="screen">dn: dc=test,dc=com
+objectClass: dcObject
+objectClass: organization
+o: centerDB
+dc: test
+
+search: 2
+result: 0 Success</pre><p>&#25968;&#25454;&#24050;&#32463;&#20174;master&#33410;&#28857;&#21516;&#27493;&#21040;&#20102;slave&#33410;&#28857;&#20102;&#12290;</p></div></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s05.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center">&nbsp;</td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch03s02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">5.&nbsp;&#23433;&#35013;HA&#29615;&#22659;&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;2.&nbsp;&#37197;&#32622;HA&#29615;&#22659;</td></tr></table></div></body></html>

@@ -1,0 +1,24 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>&#31532;&nbsp;6&nbsp;&#31456;&nbsp;&#38598;&#32676;&#26381;&#21153;&#27979;&#35797;</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="debian&#31995;&#32479;&#20013;Oracle &#39640;&#21487;&#29992;&#38598;&#32676;&#37197;&#32622;"><link rel="up" href="index.html" title="debian&#31995;&#32479;&#20013;Oracle &#39640;&#21487;&#29992;&#38598;&#32676;&#37197;&#32622;"><link rel="prev" href="ch05s03.html" title="3.&nbsp;&#27979;&#35797;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">&#31532;&nbsp;6&nbsp;&#31456;&nbsp;&#38598;&#32676;&#26381;&#21153;&#27979;&#35797;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s03.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;</td></tr></table></div><div class="chapter" title="&#31532;&nbsp;6&nbsp;&#31456;&nbsp;&#38598;&#32676;&#26381;&#21153;&#27979;&#35797;"><div class="titlepage"><div><div><h2 class="title"><a name="d0e937"></a>&#31532;&nbsp;6&nbsp;&#31456;&nbsp;&#38598;&#32676;&#26381;&#21153;&#27979;&#35797;</h2></div></div></div><div class="toc"><p><b>&#30446;&#24405;</b></p><dl><dt><span class="sect1"><a href="ch06.html#d0e940">1. &#27979;&#35797;&#39640;&#21487;&#29992;</a></span></dt></dl></div><div class="sect1" title="1.&nbsp;&#27979;&#35797;&#39640;&#21487;&#29992;"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e940"></a>1.&nbsp;&#27979;&#35797;&#39640;&#21487;&#29992;</h2></div></div></div><p>&#20570;&#21040;&#39640;&#21487;&#29992;&#23454;&#38469;&#23601;&#26159;&#24403;&#19968;&#21488;&#33410;&#28857;&#23445;&#26426;&#20043;&#21518;&#65292;&#25972;&#20010;&#38598;&#32676;&#20173;&#28982;&#33021;&#25552;&#20379;&#26381;&#21153;&#12290;</p><p>&#25105;&#20204;&#36825;&#37324;&#27979;&#35797;&#36807;&#31243;&#26159;&#65292;rac-master&#27491;&#22312;&#25552;&#20379;&#26381;&#21153;&#65292;&#20986;&#29616;&#31361;&#28982;&#23445;&#26426;&#65292;&#28982;&#21518;rac-slave&#23558;rac-master&#30340;&#26381;&#21153;&#25509;&#31649;&#36807;&#26469;&#12290;</p><p>&#39318;&#20808;&#37197;&#32622;&#23458;&#25143;&#31471;&#30340;tnsnames.ora&#25991;&#20214;</p><pre class="screen">demo =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.63)(PORT = 1521))
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.64)(PORT = 1521)) 
+    (LOAD_BALANCE = yes)  
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = demo)
+    )
+  )</pre><p>&#28982;&#21518;&#36830;&#25509;&#21040;rac-master&#19978;</p><span class="command"><strong>sqlplus system/password@demo</strong></span><p>&#26597;&#30475;&#24403;&#21069;&#23454;&#20363;&#65306;</p><span class="command"><strong>SQL&gt; select instance_name from v$instance;</strong></span><pre class="screen">INSTANCE_NAME
+--------------------------------
+demo1</pre><p>&#28982;&#21518;&#23558;rac-master&#20851;&#26426;&#65292;&#20877;&#24403;&#21069;&#23454;&#20363;&#65306;</p><span class="command"><strong>SQL&gt; select instance_name from v$instance;</strong></span><pre class="screen">INSTANCE_NAME
+--------------------------------
+demo2</pre></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s03.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center">&nbsp;</td><td width="40%" align="right">&nbsp;</td></tr><tr><td width="40%" align="left" valign="top">3.&nbsp;&#27979;&#35797;&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;</td></tr></table></div></body></html>

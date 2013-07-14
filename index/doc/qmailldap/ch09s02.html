@@ -1,0 +1,48 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>2.&nbsp;&#37197;&#32622;openldap</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Qmail+Ldap Guide"><link rel="up" href="ch09.html" title="&#31532;&nbsp;9&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;openldap"><link rel="prev" href="ch09.html" title="&#31532;&nbsp;9&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;openldap"><link rel="next" href="ch10.html" title="&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2.&nbsp;&#37197;&#32622;openldap </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;9&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;openldap</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch10.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="2.&nbsp;&#37197;&#32622;openldap"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e281"></a>2.&nbsp;&#37197;&#32622;openldap </h2></div></div></div><pre class="programlisting">
+<span class="command"><strong>cd /usr/local/openldap/etc/openldap/</strong></span>
+<span class="command"><strong>vi slapd.conf</strong></span>
+##&#28155;&#21152;&#19979;&#38754;&#30340;&#20869;&#23481;
+<pre class="programlisting">
+include /usr/local/etc/openldap/schema/core.schema
+include /usr/local/etc/openldap/schema/cosine.schema
+include /usr/local/etc/openldap/schema/inetorgperson.schema
+include /usr/local/etc/openldap/schema/nis.schema
+
+##&#25214;&#21040;&#19979;&#38754;&#30340;&#20869;&#23481;&#65292;&#20462;&#25913;&#25104;&#33258;&#24049;&#30340;&#20869;&#23481;&#12290;
+##ldap&#40664;&#35748;&#25991;&#20214;&#22841;
+suffix          "dc=dcux,dc=com"
+#LDAP&#31649;&#29702;&#32773;&#29992;&#25143;&#21517;,&#23494;&#30721;
+rootdn          "cn=Manager,dc=dcux,dc=com"
+rootpw          secret
+</pre>
+<div class="note" title="&#27880;&#24847;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#27880;&#24847;]" src="themes/default/admon/note.png"></td><th align="left">&#27880;&#24847;</th></tr><tr><td align="left" valign="top">dc=dcux,dc=com&#26367;&#25442;&#25104;&#20320;&#33258;&#24049;&#20351;&#29992;&#30340;ldap&#26381;&#21153;&#22120;&#30340;domain&#22320;&#22336;. cn=Manager&#26367;&#25442;&#25104;&#20320;&#33258;&#24049;&#30340;ldap&#26381;&#21153;&#22120;&#31649;&#29702;cn,&#20197;&#21518;&#20986;&#29616;dc=dcux,dc=com,&#19981;&#20877;&#20316;&#29305;&#27530;&#35828;&#26126;.&#23545;ldap&#22522;&#26412;&#21482;&#26159;&#19981;&#28165;&#26970;&#30340;&#65292;&#35831;&#26597;&#30475;&#30456;&#20851;&#25991;&#26723;&#12290;</td></tr></table></div>
+<span class="command"><strong>/usr/local/libexec/slapd</strong></span>(openldap&#30340;&#21551;&#21160;)
+<span class="command"><strong>ln -s /usr/local/openldap/lib/* /usr/lib/</strong></span>
+</pre><pre class="programlisting">
+<span class="command"><strong>cd /usr/local/openldap/etc/openldap/schema/</strong></span>
+<span class="command"><strong>vi ldapadmin.ldif</strong></span>
+<pre class="programlisting">
+dn: dc=dcux,dc=com 
+objectclass: dcObject
+objectclass: organization
+o: dcux
+dc: dcux-test
+
+
+dn: cn=Manager,dc=dcux,dc=com
+objectclass: organizationalRole
+cn: Manager
+</pre>
+<span class="command"><strong>/usr/local/openldap/bin/ldapadd -D "cn=Manager,dc=dcux,dc=com" -x -W -f ldapadmin.ldif</strong></span>
+<div class="note" title="&#27880;&#24847;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#27880;&#24847;]" src="themes/default/admon/note.png"></td><th align="left">&#27880;&#24847;</th></tr><tr><td align="left" valign="top">&#22914;&#26524;&#20320;&#24050;&#32463;&#25317;&#26377;&#20102;ldap&#26381;&#21153;&#22120;&#12290;&#37027;&#20040;&#28155;&#21152;ldap&#26681;&#30446;&#24405;&#21644;&#31649;&#29702;&#21592;&#36825;&#19968;&#27493;&#21487;&#20197;&#36339;&#36807;&#12290;</td></tr></table></div>
+</pre></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch09.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch10.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">&#31532;&nbsp;9&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;openldap&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail </td></tr></table></div></body></html>

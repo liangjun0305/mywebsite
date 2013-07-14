@@ -1,0 +1,18 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>5.&nbsp;&#23433;&#35013;clamav</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="&#21453;&#22403;&#22334;&#37038;&#20214;&#39033;&#30446;(&#25130;&#27490;&#26085;&#26399;01&#26376;29&#26085;&#65292;&#19977;&#21608;&#26102;&#38388;)"><link rel="up" href="ch11.html" title="&#31532;&nbsp;11&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#23433;&#35013;"><link rel="prev" href="ch11s04.html" title="4.&nbsp;&#23433;&#35013;dspam"><link rel="next" href="ch12.html" title="&#31532;&nbsp;12&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#37197;&#32622;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">5.&nbsp;&#23433;&#35013;clamav</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11s04.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;11&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#23433;&#35013;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch12.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="5.&nbsp;&#23433;&#35013;clamav"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e1795"></a>5.&nbsp;&#23433;&#35013;clamav</h2></div></div></div><pre class="programlisting">
+<span class="command"><strong></strong></span>
+<span class="command"><strong>groupadd clamav</strong></span>
+<span class="command"><strong>useradd -g clamav -s/bin/false -d/dev/null clamav</strong></span>
+<span class="command"><strong>./configure --prefix=/usr/local/clamav</strong></span>
+<span class="command"><strong>make check</strong></span>
+<span class="command"><strong>make install</strong></span>
+</pre></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11s04.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch11.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch12.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">4.&nbsp;&#23433;&#35013;dspam&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;&#31532;&nbsp;12&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#37197;&#32622;</td></tr></table></div></body></html>

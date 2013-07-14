@@ -1,0 +1,133 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Qmail+Ldap Guide"><link rel="up" href="pt02.html" title="&#37096;&#20998;&nbsp;II.&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;"><link rel="prev" href="ch09s02.html" title="2.&nbsp;&#37197;&#32622;openldap"><link rel="next" href="ch10s02.html" title="2.&nbsp;&#37197;&#32622;qmail"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#37096;&#20998;&nbsp;II.&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch10s02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="chapter" title="&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail"><div class="titlepage"><div><div><h2 class="title"><a name="d0e321"></a>&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail </h2></div></div></div><div class="toc"><p><b>&#30446;&#24405;</b></p><dl><dt><span class="sect1"><a href="ch10.html#d0e324">1. &#23433;&#35013;&#36719;&#20214; </a></span></dt><dt><span class="sect1"><a href="ch10s02.html">2. &#37197;&#32622;qmail</a></span></dt><dt><span class="sect1"><a href="ch10s03.html">3. &#23433;&#35013;&#31649;&#29702;&#37038;&#20214;&#29992;&#25143;&#30340;&#36719;&#20214;</a></span></dt></dl></div><div class="sect1" title="1.&nbsp;&#23433;&#35013;&#36719;&#20214;"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e324"></a>1.&nbsp;&#23433;&#35013;&#36719;&#20214; </h2></div></div></div><div class="sect2" title="1.1.&nbsp;&#23433;&#35013;daemontools"><div class="titlepage"><div><div><h3 class="title"><a name="d0e327"></a>1.1.&nbsp;&#23433;&#35013;daemontools  </h3></div></div></div><p>daemontools&#26159;&#30417;&#25511;&#21644;&#25511;&#21046;unix&#26381;&#21153;&#30340;&#24037;&#20855;,&#23427;&#23558;&#29992;&#26469;&#31649;&#29702;qmail-send, and qmail-smtpd, and qmail-pop3d and qmial-imap services  </p><pre class="programlisting">
+<span class="command"><strong>mkdir -p /package</strong></span>
+<span class="command"><strong>chmod 1755 /package</strong></span>
+<span class="command"><strong>cd /package</strong></span>
+<span class="command"><strong>tar -xpzf /var/src/tar/daemontools-0.76.tar.gz</strong></span>
+<span class="command"><strong>cd admin/daemontools-0.76</strong></span>
+<span class="command"><strong>patch -p1 &lt; /var/src/netqmail-1.05/other-patches/daemontools-0.76.errno.patch</strong></span>
+<span class="command"><strong>package/install</strong></span>
+# ##&#22686;&#21152;&#28165;&#38500;&#26381;&#21153;
+<span class="command"><strong>cd ../</strong></span>
+<span class="command"><strong>mkdir clear</strong></span>
+<span class="command"><strong>touch clear/down</strong></span>
+<span class="command"><strong>cat &gt; clear/run &lt;&lt;EOF</strong></span>
+<span class="command"><strong>#!/bin/sh</strong></span>
+<span class="command"><strong>yes '' | head -4000 | tr '\n' .</strong></span>
+<span class="command"><strong># When you want to clear the service errors, just run this:</strong></span>
+<span class="command"><strong># svc -o /service/clear</strong></span>
+<span class="command"><strong>EOF</strong></span>
+<span class="command"><strong>chmod +x clear/run</strong></span>
+<span class="command"><strong>chmod a-w clear/down</strong></span>
+<span class="command"><strong>ln -s /package/admin/clear /service/clear</strong></span>
+</pre></div><div class="sect2" title="1.2.&nbsp;&#23433;&#35013;ucspi-tcp"><div class="titlepage"><div><div><h3 class="title"><a name="d0e391"></a>1.2.&nbsp;&#23433;&#35013;ucspi-tcp   </h3></div></div></div><p>ucspi-tcp &#21253;&#21547; tcpserver &#21644; tcpclient. </p><pre class="programlisting">
+<span class="command"><strong>cd /var/src</strong></span>
+<span class="command"><strong>tar -xzf tar/ucspi-tcp-0.88.tar.gz</strong></span>
+<span class="command"><strong>cd ucspi-tcp-0.88</strong></span>
+<span class="command"><strong>patch -p1 &lt; /var/src/netqmail-1.05/other-patches/ucspi-tcp-0.88.errno.patch</strong></span>
+###&#20320;&#22914;&#26524;&#24819;&#20351;&#29992;&#22522;&#20110;ssl&#30340;&#19968;&#20123;&#23433;&#20840;&#35748;&#35777;&#65292;&#37027;&#20040;&#20320;&#23601;&#35201;&#25171;&#36825;&#20010;&#34917;&#19969;
+###wget http://www.nrg4u.com/qmail/ucspi-tcp-ssl-20050405.patch.gz
+###zcat ../tar/ucspi-tcp-ssl-20050405.patch.gz | patch -p0
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>make setup check</strong></span>
+</pre></div><div class="sect2" title="1.3.&nbsp;&#23433;&#35013;qmail"><div class="titlepage"><div><div><h3 class="title"><a name="d0e416"></a>1.3.&nbsp;&#23433;&#35013;qmail  </h3></div></div></div><p>qmail &#26159;&#29616;&#22312;&#20351;&#29992;&#20013;&#26368;&#27969;&#34892;&#30340;MTA&#20043;&#19968;&#65292;&#23427;&#30340;&#29305;&#28857;&#23601;&#26159;&#24555;&#36895;&#21644;&#23433;&#20840;.&#12290;</p><pre class="programlisting">
+<span class="command"><strong>mkdir /var/qmail</strong></span>
+<span class="command"><strong>groupadd nofiles</strong></span>
+<span class="command"><strong>useradd -g nofiles -d /var/qmail/alias alias</strong></span>
+<span class="command"><strong>useradd -g nofiles -d /var/qmail qmaild</strong></span>
+<span class="command"><strong>useradd -g nofiles -d /var/qmail qmaill</strong></span>
+<span class="command"><strong>useradd -g nofiles -d /var/qmail qmailp</strong></span>
+<span class="command"><strong>groupadd qmail</strong></span>
+<span class="command"><strong>useradd -g qmail -d /var/qmail qmailq</strong></span>
+<span class="command"><strong>useradd -g qmail -d /var/qmail qmailr</strong></span>
+<span class="command"><strong>useradd -g qmail -d /var/qmail qmails</strong></span>
+
+
+<span class="command"><strong>vi /etc/passwd</strong></span>
+#&#20462;&#25913;&#19979;&#38754;&#20960;&#34892;&#65292;&#23558;&#21407;&#26469;&#30340;/bin/sh&#25913;&#25104;/bin/true,&#36825;&#26159;&#22788;&#20110;&#23433;&#20840;&#32771;&#34385;&#12290;
+<pre class="programlisting">
+alias:x:1000:104::/var/qmail/alias:/bin/true
+qmaild:x:1001:104::/var/qmail:/bin/true
+qmaill:x:1002:104::/var/qmail:/bin/true
+qmailp:x:1003:104::/var/qmail:/bin/true
+qmailq:x:1004:105::/var/qmail:/bin/true
+qmailr:x:1005:105::/var/qmail:/bin/true
+qmails:x:1006:105::/var/qmail:/bin/true
+
+</pre>
+<span class="command"><strong>mkdir /home/vmail</strong></span>
+<span class="command"><strong>groupadd vmail -g 3000</strong></span>
+<span class="command"><strong>useradd vmail -u 3000 -g vmail -d /home/vmail -s /bin/true</strong></span>
+<span class="command"><strong>chown -R vmail:vmail /home/vmail </strong></span>
+
+</pre><pre class="programlisting">
+#&#25171;&#19978;ldap&#30340;&#34917;&#19969;.
+<span class="command"><strong>cd /var/src</strong></span>
+<span class="command"><strong>mv netqmail-1.05/qmail-1.03.tar.gz .</strong></span>
+<span class="command"><strong>tar zxvf qmail-1.03.tar.gz </strong></span>
+<span class="command"><strong>cd qmail-1.03</strong></span>
+<span class="command"><strong>zcat ../tar/qmail-ldap-1.03-20060201.patch.gz | patch -p1</strong></span>
+
+</pre><pre class="programlisting">
+<span class="command"><strong>cp qmail.schema /usr/local/openldap/etc/openldap/schema/</strong></span>
+<span class="command"><strong>vi /usr/local/openldap/etc/openldap/slap.conf</strong></span>
+#&#20462;&#25913;/usr/local/openldap/etc/openldap/slap.conf&#28155;&#21152;&#20197;&#19979;&#20869;&#23481;
+<pre class="programlisting">
+include /usr/local/etc/openldap/schema/qmail.schema
+</pre>
+<span class="command"><strong>vi Makefile</strong></span>
+
+#&#20462;&#25913;Makefile 
+<pre class="programlisting">
+#-DALTQUEUE to use a diffrent qmail-queue programm on runtime
+#-DBIGBROTHER to use the control/bigbrother file to forward all mails comming
+#     from a specified account to another (swiss bigbrother law)
+# -DBIGTODO to enable the big todo patch (this can be used together with 
+#     EXTERNAL_TODO). Useful for servers with very many non-preprocessed mails
+# -DBIND_8_COMPAT need if the compile fails building dns.c because of
+#     undeclared defines. This is necessary on MacOS X 10.3.
+# -DCLEARTEXTPASSWD to use cleartext passwords (bad idea on production systems)
+# -DDASH_EXT to enable the dash_ext patch for extended mail addresses
+# -DDATA_COMPRESS to use the smtp on the fly DATA compression 
+# -DEXTERNAL_TODO to use the external high-performance todo processing (this
+#     avoids the silly qmail syndrome with high injection rates)
+# -DIGNOREVERISIGN to disallow dns wildchar matches on gtlds, thanks verisign.
+# -DQLDAP_CLUSTER for enabling cluster support
+# -DQMQP_COMPRESS to use the QMQP on the fly compression (for clusters)
+# -DQUOTATRASH to include the Trash in the quota calculation (normaly it is not)
+# -DSMTPEXECCHECK to enable smtp DOS/Windows executable detection
+&#36825;&#26159;&#25105;&#30340;&#20363;&#23376;
+LDAPFLAGS=-DALTQUEUE -DEXTERNAL_TODO -DDASH_EXT -DQUOTATRASH -DQLDAP_CLUSTER
+
+LDAPLIBS&#21644;LDAPINCLUDES&#25353;&#29031;&#40664;&#35748;&#30340;.
+&#25913;&#21464;&#19979;&#38754;&#30340;&#36873;&#39033;
+MDIRMAKE=-DAUTOMAILDIRMAKE
+HDIRMAKE=-DAUTOHOMEDIRMAKE
+ZLIB=-lz
+SHADOWLIBS= -lshadow
+TLS=-DTLS_REMOTE -DTLS_SMTPD
+TLSINCLUDES=-I/usr/local/include
+TLSLIBS=-L/usr/local/lib -lssl -lcrypto
+OPENSSLBIN=/usr/local/bin/openssl
+OPENSSLBIN=openssl
+DEBUG=-DDEBUG
+</pre>
+</pre><pre class="programlisting">
+<span class="command"><strong>make setup check</strong></span>
+<span class="command"><strong>make cert </strong></span>(&#21046;&#20316;smtp-tls&#30340;&#35777;&#20070;)
+<span class="command"><strong>./config-fast dcux.com</strong></span>
+<span class="command"><strong>mv /usr/local/bin/sendmail /usr/local/bin/old.sendmail</strong></span>
+<span class="command"><strong>mv /usr/local/sbin/sendmail /usr/local/sbin/old.sendmail</strong></span>
+<span class="command"><strong>rm -f /usr/local/lib/sendmail</strong></span>
+<span class="command"><strong>ln -s /var/qmail/bin/sendmail /usr/lib</strong></span>
+<span class="command"><strong>ln -s /var/qmail/bin/sendmail /usr/sbin</strong></span>
+</pre></div></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="pt02.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch10s02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">2.&nbsp;&#37197;&#32622;openldap &nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;2.&nbsp;&#37197;&#32622;qmail</td></tr></table></div></body></html>

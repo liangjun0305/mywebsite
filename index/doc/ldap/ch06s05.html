@@ -1,0 +1,39 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>5.&nbsp;&#37197;&#32622;extmail&#21644;extman</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Postfix"><link rel="up" href="ch06.html" title="&#31532;&nbsp;6&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;ldap&#35748;&#35777;&#37197;&#32622;"><link rel="prev" href="ch06s04.html" title="4.&nbsp;&#37197;&#32622;Courier imapd"><link rel="next" href="pt03.html" title="&#37096;&#20998;&nbsp;III.&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">5.&nbsp;&#37197;&#32622;extmail&#21644;extman</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch06s04.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;6&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;ldap&#35748;&#35777;&#37197;&#32622;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="pt03.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="5.&nbsp;&#37197;&#32622;extmail&#21644;extman"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e1366"></a>5.&nbsp;&#37197;&#32622;extmail&#21644;extman</h2></div></div></div><div class="sect2" title="5.1.&nbsp;&#37197;&#32622;extmail"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1369"></a>5.1.&nbsp;&#37197;&#32622;extmail</h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>cd /usr/local/httpd/htdocs/extsuite/extmail</strong></span>
+<span class="command"><strong>cp webmail.cf.default webmail.cf</strong></span>
+</pre><p>&#22914;&#26524;&#20320;&#23548;&#20837;&#30340;&#26159;extmail&#30340;&#25968;&#25454;&#24211;&#25991;&#20214;&#65292;&#27880;&#24847;&#19979;&#38754;&#20960;&#20010;&#36873;&#39033;&#23601;&#21487;&#20197;&#20102;&#12290;</p><pre class="screen">
+SYS_CONFIG = /usr/local/httpd/htdocs/extsuite/extmail/
+SYS_LANGDIR = /usr/local/httpd/htdocs/extsuite/extmail/lang
+SYS_TEMPLDIR = /usr/local/httpd/htdocs/extsuite/extmail/html
+SYS_MAILDIR_BASE = /home/vmail
+SYS_BACKEND_TYPE = ldap
+SYS_LDAP_BASE = dc=test.com
+SYS_LDAP_RDN = cn=Manager,dc=test.com
+SYS_LDAP_PASS = secret
+SYS_LDAP_HOST = localhost
+
+</pre></div><div class="sect2" title="5.2.&nbsp;&#37197;&#32622;extman"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1384"></a>5.2.&nbsp;&#37197;&#32622;extman</h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>cd /usr/local/httpd/htdocs/extsuite/extman</strong></span>
+<span class="command"><strong>cp webman.cf.default webman.cf</strong></span>
+</pre><p>&#22914;&#26524;&#20320;&#23548;&#20837;&#30340;&#26159;extmail&#30340;&#25968;&#25454;&#24211;&#25991;&#20214;&#65292;&#27880;&#24847;&#19979;&#38754;&#20960;&#20010;&#36873;&#39033;&#23601;&#21487;&#20197;&#20102;&#12290;</p><pre class="screen">
+SYS_CONFIG = /usr/local/httpd/htdocs/extsuite/extman/
+SYS_LANGDIR = /usr/local/httpd/htdocs/extsuite/extman/lang
+SYS_TEMPLDIR = /usr/local/httpd/htdocs/extsuite/extman/html
+SYS_MAILDIR_BASE = /home/vmail
+SYS_BACKEND_TYPE = ldap
+SYS_LDAP_BASE = dc=test.com
+SYS_LDAP_RDN = cn=Manager,dc=test.com
+SYS_LDAP_PASS = secret
+SYS_LDAP_HOST = localhost
+
+</pre></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch06s04.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch06.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="pt03.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">4.&nbsp;&#37197;&#32622;Courier imapd&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;&#37096;&#20998;&nbsp;III.&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav</td></tr></table></div></body></html>

@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>3.&nbsp;Debian&#31995;&#32479;&#37197;&#32622;</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="debian&#31995;&#32479;&#20013;Oracle &#39640;&#21487;&#29992;&#38598;&#32676;&#37197;&#32622;"><link rel="up" href="ch03.html" title="&#31532;&nbsp;3&nbsp;&#31456;&nbsp;&#31995;&#32479;&#23433;&#35013;&#21644;&#37197;&#32622;"><link rel="prev" href="ch03s02.html" title="2.&nbsp;Debian&#31995;&#32479;&#23433;&#35013;"><link rel="next" href="ch03s04.html" title="4.&nbsp;&#28155;&#21152;&#34394;&#25311;&#20849;&#20139;&#30913;&#30424;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.&nbsp;Debian&#31995;&#32479;&#37197;&#32622;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;3&nbsp;&#31456;&nbsp;&#31995;&#32479;&#23433;&#35013;&#21644;&#37197;&#32622;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch03s04.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="3.&nbsp;Debian&#31995;&#32479;&#37197;&#32622;"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e262"></a>3.&nbsp;Debian&#31995;&#32479;&#37197;&#32622;</h2></div></div></div><p>&#23433;&#35013;&#24517;&#35201;&#36719;&#20214;&#65306;</p><span class="command"><strong># apt-get -y install vim ssh gcc make unzip binutils lesstif2 libc6 libc6-dev libmotif4 libaio1 libstdc++5 gawk ksh alien libtool lsb-rpm ntp iputils-arping</strong></span><p>&#37197;&#32622;&#32593;&#32476;&#65306;</p><span class="command"><strong># vi /etc/network/interfaces</strong></span><pre class="screen">auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug eth0
+iface eth0 inet static
+        address 192.168.1.61
+        netmask 255.255.255.0
+        network 192.168.1.0
+        broadcast 192.168.1.255
+        gateway 192.168.1.1
+        # dns-* options are implemented by the resolvconf package, if installed
+        dns-nameservers 202.96.209.133 202.96.209.5 202.96.209.6
+allow-hotplug eth1
+iface eth1 inet static
+        address 192.168.2.61
+        netmask 255.255.255.0
+        network 192.168.2.0
+        broadcast 192.168.2.255</pre><p>&#37197;&#32622;&#20027;&#26426;&#65292;&#22686;&#21152;&#22914;&#19979;&#20869;&#23481;&#65306;</p><span class="command"><strong># vi /etc/hosts</strong></span><pre class="screen">#Public
+192.168.1.61   rac-master
+192.168.1.62   rac-slave
+# Private
+192.168.2.61   oracle-master-priv
+192.168.2.62   rac-slave-priv
+# Virtual
+192.168.1.63   rac-master-vip
+192.168.1.64   rac-slave-vip</pre><p>&#37197;&#32622;&#29992;&#25143;&#65292;&#22914;&#26524;&#22312;&#23433;&#35013;&#31995;&#32479;&#26102;&#20505;&#28155;&#21152;&#20102;oracle&#29992;&#25143;&#65292;&#21017;&#26159;&#22914;&#19979;&#21629;&#20196;&#37197;&#32622;&#65306;</p><span class="command"><strong><p># groupadd -g 500 oinstall</p></strong></span><span class="command"><strong><p># groupadd -g 501 dba</p></strong></span><span class="command"><strong><p># usermod -g oinstall -G dba oracle</p></strong></span><p>&#37197;&#32622;&#29992;&#25143;&#65292;&#22914;&#26524;&#23433;&#35013;&#31995;&#32479;&#27809;&#26377;&#28155;&#21152;oracle&#29992;&#25143;&#65292;&#21017;&#26159;&#22914;&#19979;&#21629;&#20196;&#37197;&#32622;&#65306;</p><span class="command"><strong><p># groupadd -g 500 oinstal</p></strong></span><span class="command"><strong><p># groupadd -g 501 dba</p></strong></span><span class="command"><strong><p># useradd -g oinstall -G dba oracle</p></strong></span><p>&#37197;&#32622;nobody&#29992;&#25143;&#65306;</p><span class="command"><strong><p># groupadd nobody</p></strong></span><span class="command"><strong><p># usermod -g nobody nobody</p></strong></span><p>&#21019;&#24314;oracle&#25968;&#25454;&#21644;rac&#30340;&#23433;&#35013;&#30446;&#24405;&#65306; </p><span class="command"><strong><p># mkdir -p -m 775 /var/oracle</p></strong></span><span class="command"><strong><p># chown -R oracle:oinstall /var/oracle</p></strong></span><p>&#37197;&#32622;oracle&#29992;&#25143;&#29615;&#22659;&#21464;&#37327;&#65306;</p><span class="command"><strong><p># vi /home/oracle/.profile</p></strong></span><pre class="screen">export ORACLE_BASE=/var/oracle
+export ORACLE_HOME=$ORACLE_BASE/product/db
+export ORA_CRS_HOME=$ORACLE_BASE/product/crs
+export ORACLE_PATH=$ORACLE_BASE/dba_scripts/common/sql:.:$ORACLE_HOME/rdbms/admin
+
+# Each RAC node must have a unique ORACLE_SID. (i.e. oracle-master, oracle-slave,...)
+export ORACLE_SID=rac-master
+
+export PATH=.:${PATH}:$HOME/bin:$ORACLE_HOME/bin
+export PATH=${PATH}:/usr/bin:/bin:/usr/bin/X11:/usr/local/bin
+export PATH=${PATH}:$ORACLE_BASE/dba_scripts/common/bin
+export ORACLE_TERM=xterm
+export TNS_ADMIN=$ORACLE_HOME/network/admin
+export ORA_NLS10=$ORACLE_HOME/nls/data
+export NLS_DATE_FORMAT="DD-MON-YYYY HH24:MI:SS"
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$ORACLE_HOME/oracm/lib
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/lib:/usr/lib:/usr/local/lib
+export CLASSPATH=$ORACLE_HOME/JRE
+export CLASSPATH=${CLASSPATH}:$ORACLE_HOME/jlib
+export CLASSPATH=${CLASSPATH}:$ORACLE_HOME/rdbms/jlib
+export CLASSPATH=${CLASSPATH}:$ORACLE_HOME/network/jlib
+export THREADS_FLAG=native
+export TEMP=/tmp
+export TMPDIR=/tmp</pre><p>&#37492;&#20110;debian&#31995;&#32479;&#30340;&#29305;&#28857;&#65292;&#38656;&#35201;&#20570;&#20960;&#26465;&#21629;&#20196;&#30340;&#38142;&#25509;&#65306;</p><span class="command"><strong><p># ln -s /usr/bin/basename /bin/basename</p></strong></span><span class="command"><strong><p># ln -s /usr/bin/rpm /bin/rpm</p></strong></span><span class="command"><strong><p># ln -s /usr/bin/awk /bin/awk</p></strong></span><p>&#37492;&#20110;debian&#31995;&#32479;&#30340;&#29305;&#28857;&#65292;&#20570;&#20960;&#20010;&#24320;&#26426;&#21551;&#21160;&#30340;&#25913;&#21160;&#65306;</p><span class="command"><strong><p># mkdir /etc/rc.d/</p></strong></span><span class="command"><strong><p># ln -s /etc/rc* /etc/rc.d/</p></strong></span><div class="tip" title="&#25552;&#31034;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#25552;&#31034;]" src="themes/default/admon/tip.png"></td><th align="left">&#25552;&#31034;</th></tr><tr><td align="left" valign="top">roacle&#22312;&#20889;&#24320;&#26426;&#21551;&#21160;&#36873;&#39033;&#26159;&#40664;&#35748;&#25353;&#29031;redhat&#20064;&#24815;&#20889;&#30340;&#65292;&#22312;/etc/rc.d/rc*.d/&#20013;&#65292;&#32780;debian&#30340;&#21551;&#21160;&#39033;&#26159;&#25918;&#22312;/etc/rc*.d/&#20013;&#65292;&#22914;&#19981;&#20570;&#36825;&#19968;&#27493;&#65292;&#23558;&#20250;&#22312;&#23433;&#35013;rac&#36816;&#34892;root.sh&#26102;&#20505;&#25253;&#38169;&#36864;&#20986;&#12290;</td></tr></table></div><p>&#37492;&#20110;debian&#31995;&#32479;&#30340;&#29305;&#28857;&#65292;&#20462;&#25913;/etc/inittab&#65292;&#23558;id:2:initdefault&#20462;&#25913;&#25104;id:3:initdefault&#65306;</p><span class="command"><strong><p># vi /etc/inittab</p></strong></span><pre class="screen">id:3:initdefault:</pre><span class="command"><strong><p># telinit 3</p></strong></span><div class="tip" title="&#25552;&#31034;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#25552;&#31034;]" src="themes/default/admon/tip.png"></td><th align="left">&#25552;&#31034;</th></tr><tr><td align="left" valign="top">oracle&#20250;&#19977;&#20010;&#31243;&#24207;&#25918;&#22312;inittab&#20013;&#65292;&#20294;&#26159;&#36825;&#19977;&#20010;&#31243;&#24207;&#35774;&#32622;&#30340;&#21551;&#21160;&#31561;&#32423;&#26159;3&#25110;5&#65292;&#20294;&#26159;debian&#40664;&#35748;&#21551;&#21160;&#32423;&#21035;&#26159;2&#65292;&#25152;&#20197;&#20462;&#25913;debian&#30340;&#40664;&#35748;&#21551;&#21160;&#25110;&#26159;&#20462;&#25913;oracle&#19977;&#20010;&#31243;&#24207;&#30340;&#21551;&#21160;&#31561;&#32423;&#37117;&#21487;&#20197;&#12290;&#22914;&#26524;&#19981;&#20570;&#36825;&#21733;&#25913;&#21160;&#65292;&#23433;&#35013;rac&#36816;&#34892;root.sh&#26102;&#20505;oracle&#30340;crs&#31243;&#24207;&#23558;&#19981;&#20250;&#21551;&#21160;&#12290;</td></tr></table></div><p>&#23558;debian&#20266;&#35013;&#25104;oracle&#25903;&#25345;&#30340;&#31995;&#32479;&#29256;&#26412;&#65306;</p><span class="command"><strong><p># echo "Red Hat Linux release 4.1" &gt; /etc/redhat-release</p></strong></span></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch03s04.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">2.&nbsp;Debian&#31995;&#32479;&#23433;&#35013;&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;4.&nbsp;&#28155;&#21152;&#34394;&#25311;&#20849;&#20139;&#30913;&#30424;</td></tr></table></div></body></html>

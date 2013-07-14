@@ -1,0 +1,67 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>3.&nbsp;&#37197;&#32622;pacemaker</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Openldap &#39640;&#21487;&#29992;&#38598;&#32676;&#37197;&#32622;"><link rel="up" href="ch03.html" title="&#31532;&nbsp;3&nbsp;&#31456;&nbsp;&#26381;&#21153;&#37197;&#32622;"><link rel="prev" href="ch03s02.html" title="2.&nbsp;&#37197;&#32622;HA&#29615;&#22659;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.&nbsp;&#37197;&#32622;pacemaker</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;3&nbsp;&#31456;&nbsp;&#26381;&#21153;&#37197;&#32622;</th><td width="20%" align="right">&nbsp;</td></tr></table></div><div class="sect1" title="3.&nbsp;&#37197;&#32622;pacemaker"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e304"></a>3.&nbsp;&#37197;&#32622;pacemaker</h2></div></div></div><p>pacemaker&#20027;&#35201;&#36890;&#36807;crm&#21629;&#20196;&#26469;&#36827;&#34892;&#37197;&#32622;&#12290;&#20320;&#21482;&#38656;&#35201;&#22312;&#19968;&#20010;&#33410;&#28857;&#19978;&#26469;&#37197;&#32622;&#65292;pacemaker&#20250;&#33258;&#21160;&#21516;&#27493;&#37197;&#32622;&#21040;&#20854;&#20182;&#33410;&#28857;&#12290;</p><div class="sect2" title="3.1.&nbsp;&#37197;&#32622;Stonith"><div class="titlepage"><div><div><h3 class="title"><a name="d0e309"></a>3.1.&nbsp;&#37197;&#32622;Stonith</h3></div></div></div><p>Stonith&#26159;HA&#30340;&#19968;&#20010;&#23433;&#20840;&#29305;&#24615;&#65292;&#20294;&#26159;&#38656;&#35201;&#29305;&#23450;&#30340;&#30828;&#20214;&#37197;&#21512;&#65292;&#25152;&#20197;&#36825;&#37324;&#25105;&#20204;&#20851;&#38381;&#20182;&#12290;&#22914;&#26524;&#20320;&#24819;&#35201;&#20102;&#35299;&#20182;&#65292;&#35831;&#26597;&#38405;http://www.clusterlabs.org/doc/crm_fencing.html</p><p>&#36890;&#36807;&#19979;&#38754;&#21629;&#20196;&#26816;&#26597;&#19968;&#19979;&#37197;&#32622;&#65292;&#19981;&#20986;&#24847;&#22806;&#23558;&#20250;&#26377;&#38169;&#35823;&#20986;&#29616;&#12290;</p><span class="command"><strong>crm_verify -L</strong></span><p>&#28982;&#21518;&#20851;&#38381;Stonith&#12290;</p><span class="command"><strong>crm configure property stonith-enabled=false</strong></span><p>&#22312;&#20801;&#35768;&#19968;&#19979;&#21629;&#20196;&#65292;&#36825;&#19979;&#24212;&#35813;&#26159;&#27809;&#26377;&#38169;&#35823;&#36755;&#20986;&#20102;&#12290;</p><span class="command"><strong>crm_verify -L</strong></span></div><div class="sect2" title="3.2.&nbsp;&#37197;&#32622;&#38598;&#32676;&#26381;&#21153;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e326"></a>3.2.&nbsp;&#37197;&#32622;&#38598;&#32676;&#26381;&#21153;</h3></div></div></div><span class="command"><strong>crm configure property no-quorum-policy=ignore</strong></span><span class="command"><strong>crm configure  primitive failover-ip ocf:heartbeat:IPaddr params ip=192.168.1.80 op monitor interval=10se</strong></span><p>&#25105;&#20204;&#26469;&#30475;&#30475;&#20004;&#20010;&#33410;&#28857;&#30340;&#37197;&#32622;</p><span class="command"><strong>crm configure show</strong></span><pre class="screen">node master
+node slave
+primitive failover-ip ocf:heartbeat:IPaddr \
+	params ip="192.168.1.80" \
+	op monitor interval="10s"
+property $id="cib-bootstrap-options" \
+	dc-version="1.1.2-2e096a41a5f9e184a1c1537c82c6da1093698eb5" \
+	cluster-infrastructure="openais" \
+	expected-quorum-votes="1" \
+	no-quorum-policy="ignore" \
+	stonith-enabled="false"</pre><p>&#25105;&#20204;&#26469;&#30475;&#30475;&#20004;&#20010;&#33410;&#28857;&#30340;&#29366;&#24577;&#12290;&#36816;&#34892;&#19979;&#38754;&#21629;&#20196;&#65292;&#22312;&#20004;&#20010;&#33410;&#28857;&#19978;&#36816;&#34892;&#37117;&#21487;&#20197;&#65292;&#36755;&#20986;&#32467;&#26524;&#37117;&#26159;&#19968;&#26679;&#12290;&#26597;&#30475;&#29366;&#24577;&#26377;&#20004;&#31181;&#21629;&#20196;&#65306;crm status &#21644;crm_mon -1</p><span class="command"><strong>crm staus</strong></span><pre class="screen">============
+Last updated: Tue Dec 14 15:08:01 2010
+Stack: openais
+Current DC: master - partition with quorum
+Version: 1.1.2-2e096a41a5f9e184a1c1537c82c6da1093698eb5
+2 Nodes configured, 1 expected votes
+1 Resources configured.
+============
+
+Online: [ slave master ]
+
+ failover-ip	(ocf::heartbeat:IPaddr):	Started master</pre><p>&#27604;&#36215;&#21018;&#25165;&#30340;&#30340;&#29366;&#24577;&#65292;&#22810;&#20102; failover-ip&#65292;&#20182;&#26174;&#31034;&#20986;&#25552;&#20379;&#26381;&#21153;&#30340;&#26426;&#22120;&#12290;&#26159;master&#25552;&#20379;&#30340;&#26381;&#21153;</p></div><div class="sect2" title="3.3.&nbsp;&#27979;&#35797;HA&#38598;&#32676;&#26381;&#21153;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e347"></a>3.3.&nbsp;&#27979;&#35797;HA&#38598;&#32676;&#26381;&#21153;</h3></div></div></div><p>&#25105;&#20204;&#26469;ping&#19968;&#19979;&#25552;&#20379;&#26381;&#21153;&#30340;ip&#22320;&#22336;192.168.1.80&#12290;</p><span class="command"><strong>ping -c 2 192.168.1.80</strong></span><pre class="screen">PING 192.168.1.80 (192.168.1.80) 56(84) bytes of data.
+64 bytes from 192.168.1.80: icmp_req=1 ttl=64 time=4.43 ms
+^C
+--- 192.168.1.80 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 4.434/4.434/4.434/0.000 ms</pre><p>&#25105;&#20204;&#26469;&#26597;&#35810;&#19968;&#19979;ldap&#25968;&#25454;&#12290;</p><span class="command"><strong>ldapsearch -x -W -D "cn=Manager,dc=test,dc=com"  -h 192.168.1.80 -s base -b "dc=test,dc=com" "objectClass=*"</strong></span><pre class="screen">dn: dc=test,dc=com
+objectClass: dcObject
+objectClass: organization
+o: centerDB
+dc: test
+
+search: 2
+result: 0 Success</pre><p>&#36825;&#26679;&#24320;&#26469;master&#25552;&#20379;&#30340;&#26381;&#21153;&#27491;&#24120;&#65292;&#29616;&#22312;&#25105;&#20204;&#23558;master&#26426;&#22120;&#30340;&#32593;&#21345;&#26029;&#25481;&#12290;&#28982;&#21518;&#22312;slave&#26426;&#22120;&#19978;&#26597;&#30475;&#19968;&#19979;&#38598;&#32676;&#30340;&#29366;&#24577;:</p><span class="command"><strong>crm staus</strong></span><pre class="screen">============
+Last updated: Tue Dec 14 15:08:01 2010
+Stack: openais
+Current DC: master - partition with quorum
+Version: 1.1.2-2e096a41a5f9e184a1c1537c82c6da1093698eb5
+2 Nodes configured, 1 expected votes
+1 Resources configured.
+============
+
+Online: [ slave master ]
+
+ failover-ip	(ocf::heartbeat:IPaddr):	Started slave</pre><p>&#26174;&#31034;&#20986;&#25552;&#20379;&#26381;&#21153;&#30340;&#26426;&#22120;&#26159;slave</p><p>&#25105;&#20204;&#22312;&#26469;ping&#19968;&#19979;&#25552;&#20379;&#26381;&#21153;&#30340;ip&#22320;&#22336;192.168.1.80&#12290;</p><span class="command"><strong>ping -c 2 192.168.1.80</strong></span><pre class="screen">PING 192.168.1.80 (192.168.1.80) 56(84) bytes of data.
+64 bytes from 192.168.1.80: icmp_req=1 ttl=64 time=4.43 ms
+^C
+--- 192.168.1.80 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 4.434/4.434/4.434/0.000 ms</pre><p>&#25105;&#20204;&#26469;&#26597;&#35810;&#19968;&#19979;ldap&#25968;&#25454;&#12290;</p><span class="command"><strong>ldapsearch -x -W -D "cn=Manager,dc=test,dc=com"  -h 192.168.1.80 -s base -b "dc=test,dc=com" "objectClass=*"</strong></span><pre class="screen">dn: dc=test,dc=com
+objectClass: dcObject
+objectClass: organization
+o: centerDB
+dc: test
+
+search: 2
+result: 0 Success</pre><p>&#30001;&#27492;&#21487;&#20197;&#30475;&#20986;&#65292;master&#33410;&#28857;&#26029;&#25481;&#21518;&#65292;&#26381;&#21153;&#29031;&#24120;&#25552;&#20379;&#12290;&#33267;&#27492;&#65292;Openldap &#21452;&#26426;&#39640;&#21487;&#29992;&#38598;&#32676;&#37197;&#32622;&#25645;&#24314;&#23436;&#25104;&#12290;</p></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch03.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;</td></tr><tr><td width="40%" align="left" valign="top">2.&nbsp;&#37197;&#32622;HA&#29615;&#22659;&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;</td></tr></table></div></body></html>

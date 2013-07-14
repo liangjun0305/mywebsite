@@ -1,0 +1,149 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>&#31532;&nbsp;1&nbsp;&#31456;&nbsp;qmail&#23458;&#25143;&#31471;&#20110;smtp&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="&#25235;&#21253;&#20998;&#26512;Qmail&#30456;&#20851;&#32452;&#20214;&#30340;&#24037;&#20316;&#21407;&#29702;"><link rel="up" href="index.html" title="&#25235;&#21253;&#20998;&#26512;Qmail&#30456;&#20851;&#32452;&#20214;&#30340;&#24037;&#20316;&#21407;&#29702;"><link rel="prev" href="index.html" title="&#25235;&#21253;&#20998;&#26512;Qmail&#30456;&#20851;&#32452;&#20214;&#30340;&#24037;&#20316;&#21407;&#29702;"><link rel="next" href="ch02.html" title="&#31532;&nbsp;2&nbsp;&#31456;&nbsp;smtp&#26381;&#21153;&#22120;&#19982;smtp&#30340;&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">&#31532;&nbsp;1&nbsp;&#31456;&nbsp;qmail&#23458;&#25143;&#31471;&#20110;smtp&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="index.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="chapter" title="&#31532;&nbsp;1&nbsp;&#31456;&nbsp;qmail&#23458;&#25143;&#31471;&#20110;smtp&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;"><div class="titlepage"><div><div><h2 class="title"><a name="d0e26"></a>&#31532;&nbsp;1&nbsp;&#31456;&nbsp;qmail&#23458;&#25143;&#31471;&#20110;smtp&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;</h2></div></div></div><p>&#25105;&#23558;&#29992;&#25105;&#30340;&#35797;&#39564;&#20570;&#20026;&#35828;&#26126;,&#25105;&#30340;&#23458;&#25143;&#31471;&#26159;1.99,&#19968;&#21488;&#37038;&#20214;&#26381;&#21153;&#22120;&#26159;1.78,&#21478;&#22806;&#19968;&#21488;&#37038;&#20214;&#26381;&#21153;&#22120;&#26159;2.39&#65292;DNS&#26159;2.39&#12290;</p><p>&#39318;&#20808;&#65292;&#19981;&#21487;&#32570;&#23569;&#30340;&#26159;&#19977;&#27425;&#25569;&#25163;</p><p>&#31995;&#32479;&#26085;&#24535;&#35760;&#24405;</p><p>Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=28593 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=5840 RES=0x00 SYN URGP=0 </p><pre class="programlisting">Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=60 TOS=0x00 PREC=0x00 TTL=64 
+ID=28593 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=5840 RES=0x00 SYN URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=5792 RES=0x00 ACK SYN URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=28594 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK URGP=0 
+</pre><p>wireshark&#25235;&#21253;&#26174;&#31034;</p><pre class="programlisting">192.168.1.99          192.168.1.78          TCP      39665 &gt; smtp [SYN] Seq=0 Len=0 MSS=1460 TSV=2184843 TSER=0 WS=5
+192.168.1.78          192.168.1.99          TCP      smtp &gt; 39665 [SYN, ACK] Seq=0 Ack=1 Win=46336 Len=0 MSS=1460 TSV=176054 TSER=2184843 WS=3
+192.168.1.99          192.168.1.78          TCP      39665 &gt; smtp [ACK] Seq=1 Ack=1 Win=5856 Len=0 TSV=2184843 TSER=176054</pre><p>&#28982;&#21518;&#26159;&#25105;&#26377;&#30097;&#38382;&#30340;&#22320;&#26041;&#65292;&#19981;&#30693;&#36947;&#25105;smtp&#26381;&#21153;&#22120;&#20026;&#20160;&#20040;&#21435;&#25214;DNS&#35831;&#27714;&#36825;&#20010;&#22320;&#22336; </p><p>&#31995;&#32479;&#26085;&#24535;&#35760;&#24405;</p><pre class="programlisting">Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.2.39 LEN=71 TOS=0x00 PREC=0x00 TTL=64 ID=44984 DF PROTO=UDP SPT=64715 DPT=53 
+LEN=51 
+
+Oct  8 11:30:30 liangjun kernel: lijmPOSTROUTING:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.2.39 LEN=71 TOS=0x00 PREC=0x00 TTL=64 ID=44984 DF PROTO=UDP SPT=64715 
+DPT=53 LEN=51 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:0e:0c:65:87:ba:08:00 SRC=192.168.2.39 DST=192.168.1.78 LEN=148 TOS=0x00 PREC=0x00 TTL=63 
+ID=0 DF PROTO=UDP SPT=53 DPT=64715 LEN=128 </pre><p>wireshark&#25235;&#21253;&#26174;&#31034;</p><pre class="programlisting">192.168.1.78          192.168.2.39          DNS      Standard query PTR 99.1.168.192.in-addr.arpa
+192.168.2.39          192.168.1.78          DNS      Standard query response, No such name</pre><p>&#28982;&#21518;&#23601;&#26159;smtp&#21644;&#23458;&#25143;&#31471;&#20132;&#20114;&#30340;&#26102;&#20505;&#20102;&#65292; &#31995;&#32479;&#26085;&#24535;&#35760;&#24405; </p><pre class="programlisting">Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=78 TOS=0x00 PREC=0x00 TTL=64 ID=60911 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=724 RES=0x00 ACK PSH URGP=0 </pre><p>wireshark&#25235;&#21253;&#26174;&#31034;</p><pre class="programlisting">192.168.1.78          192.168.1.99          SMTP     Response: 220 dcux-test1.com ESMTP</pre><p>&#19978;&#38754;&#30340;&#20449;&#24687;&#21578;&#35785;&#25105;&#20204;&#65306;smtp&#26381;&#21153;&#22120;&#21578;&#35785;&#23458;&#25143;&#31471;&#65292;&#23427;&#30340;smtp&#24050;&#32463;&#20934;&#22791;&#23601;&#32493;&#20102;&#12290;</p><p>&#20934;&#22791;&#22909;&#20102;&#65292;&#37027;&#20040;&#20132;&#20114;&#24320;&#22987;&#65292; &#31995;&#32479;&#26085;&#24535;&#35760;&#24405;</p><pre class="programlisting">Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=28595 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=73 TOS=0x00 PREC=0x00 TTL=64 
+ID=28596 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=60912 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=724 RES=0x00 ACK URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=102 TOS=0x00 PREC=0x00 TTL=64 ID=60913 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=724 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=28597 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=85 TOS=0x00 PREC=0x00 TTL=64 
+ID=28598 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=60914 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=724 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=88 TOS=0x00 PREC=0x00 TTL=64 
+ID=28599 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=60915 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=724 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=58 TOS=0x00 PREC=0x00 TTL=64 
+ID=28600 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=66 TOS=0x00 PREC=0x00 TTL=64 ID=60916 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=724 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=394 TOS=0x00 PREC=0x00 TTL=64 
+ID=28601 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=79 TOS=0x00 PREC=0x00 TTL=64 ID=60917 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=858 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=58 TOS=0x00 PREC=0x00 TTL=64 
+ID=28602 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=72 TOS=0x00 PREC=0x00 TTL=64 ID=60918 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=858 RES=0x00 ACK PSH URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=60919 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=858 RES=0x00 ACK FIN URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=28603 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:18:f3:5d:64:69:08:00 SRC=192.168.1.99 DST=192.168.1.78 LEN=52 TOS=0x00 PREC=0x00 TTL=64 
+ID=28604 DF PROTO=TCP SPT=39665 DPT=25 WINDOW=183 RES=0x00 ACK FIN URGP=0 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.1.99 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=25 DPT=39665 
+WINDOW=858 RES=0x00 ACK URGP=0</pre><p>wireshark&#25235;&#21253;&#26174;&#31034; </p><pre class="programlisting">192.168.1.99          192.168.1.78          TCP      39665 &gt; smtp [ACK] Seq=1 Ack=27 Win=5856 Len=0 TSV=2184848 TSER=176059
+192.168.1.99          192.168.1.78          SMTP     Command: EHLO [192.168.1.99]
+192.168.1.78          192.168.1.99          TCP      smtp &gt; 39665 [ACK] Seq=27 Ack=22 Win=5792 Len=0 TSV=176085 TSER=2184874
+192.168.1.78          192.168.1.99          SMTP     Response: 250-dcux-test1.com
+192.168.1.99          192.168.1.78          TCP      39665 &gt; smtp [ACK] Seq=22 Ack=77 Win=5856 Len=0 TSV=2184874 TSER=176085
+192.168.1.99          192.168.1.78          SMTP     Command: MAIL FROM:&lt;test@dcux-test1.com&gt;
+192.168.1.78          192.168.1.99          SMTP     Response: 250 ok
+192.168.1.99          192.168.1.78          SMTP     Command: RCPT TO:&lt;postmaster@dcux-test.com&gt;
+192.168.1.78          192.168.1.99          SMTP     Response: 250 ok
+192.168.1.99          192.168.1.78          SMTP     Command: DATA
+192.168.1.78          192.168.1.99          SMTP     Response: 354 go ahead
+192.168.1.99          192.168.1.78          SMTP     Message Body
+192.168.1.78          192.168.1.99          SMTP     Response: 250 ok 1191814230 qp 7414
+192.168.1.99          192.168.1.78          SMTP     Message Body
+192.168.1.78          192.168.1.99          SMTP     Response: 221 dcux-test1.com</pre><p>&#30475;&#21040;&#36825;&#37324;&#65292;&#29087;&#24713;&#37038;&#20214;&#26381;&#21153;&#22120;&#30340;&#20320;&#26159;&#21542;&#24819;&#21040;&#36825;&#19996;&#35199;&#22909;&#20687;&#26377;&#28857;&#29087;&#24713;&#21734;&#65292;</p><p>&#21621;&#21621;&#65292;&#23545;&#20102;&#20320;&#21487;&#20197;&#35797;&#35797;&#36825;&#20010;telnet 192.168.1.78 25&#65292;&#20320;&#26159;&#19981;&#26159;&#24819;&#26469;&#20102;&#21602;&#65311; </p><pre class="programlisting">220 dcux-test1.com ESMTP
+
+EHLO [192.168.1.99]
+
+250-dcux-test1.com
+
+250-PIPELINING
+
+250 8BITMIME
+
+MAIL FROM:&lt;test@dcux-test1.com&gt;
+
+250 ok
+
+RCPT TO:&lt;postmaster@dcux-test.com&gt;
+
+250 ok
+
+DATA
+
+354 go ahead
+
+Message-ID: &lt;4709A458.2080803@dcux-test1.com&gt;
+
+Date: Mon, 08 Oct 2007 11:30:32 +0800
+
+From: dcux &lt;test@dcux-test1.com&gt;
+
+User-Agent: Thunderbird 1.5.0.13 (X11/20070824)
+
+MIME-Version: 1.0
+
+To: dcux &lt;postmaster@dcux-test.com&gt;
+
+Subject: aaaaaaaaaaaaaaa
+
+Content-Type: text/plain; charset=GB2312
+
+Content-Transfer-Encoding: 7bit
+
+
+
+asdasdasd
+
+.
+
+250 ok 1191814230 qp 7414
+
+QUIT
+
+221 dcux-test1.com</pre><p>&#21734;&#65292;&#21407;&#26469;&#23601;&#26159;&#36825;&#20010;&#36807;&#31243;&#38463;&#12290; &#21040;&#27492;&#65292;qmail&#37038;&#20214;&#26381;&#21153;&#22120;&#23601;&#25509;&#21463;&#20102;&#20174;&#23458;&#25143;&#31471;&#26469;&#30340;&#20449;&#20214;&#65292;qmail&#22914;&#26524;&#30475;&#22320;&#22336;&#26159;&#26412;&#22320;&#65292;&#23601;&#25237;&#36882;&#21040;&#26412;&#22320;&#22320;&#22336;&#30340;&#37038;&#31665;&#65292;&#22914;&#26524;&#19981;&#26159;&#21602;&#65311;&#37027;&#20040;&#25105;&#20204;&#24448;&#19979;&#30475;&#12290; </p></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="index.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center">&nbsp;</td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">&#25235;&#21253;&#20998;&#26512;Qmail&#30456;&#20851;&#32452;&#20214;&#30340;&#24037;&#20316;&#21407;&#29702;&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;&#31532;&nbsp;2&nbsp;&#31456;&nbsp;smtp&#26381;&#21153;&#22120;&#19982;smtp&#30340;&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;</td></tr></table></div></body></html>

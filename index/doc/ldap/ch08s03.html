@@ -1,0 +1,27 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>3.&nbsp;&#23433;&#35013;amavisd-new</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Postfix"><link rel="up" href="ch08.html" title="&#31532;&nbsp;8&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#23433;&#35013;"><link rel="prev" href="ch08s02.html" title="2.&nbsp;&#23433;&#35013;spamassassin"><link rel="next" href="ch08s04.html" title="4.&nbsp;&#23433;&#35013;dspam"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.&nbsp;&#23433;&#35013;amavisd-new</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch08s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;8&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#23433;&#35013;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch08s04.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="3.&nbsp;&#23433;&#35013;amavisd-new"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e1570"></a>3.&nbsp;&#23433;&#35013;amavisd-new</h2></div></div></div><pre class="programlisting">
+<span class="command"><strong>groupadd amavis</strong></span>
+<span class="command"><strong>useradd -g amavis -s /bin/false -c "Amavis User" -d /dev/null amavis</strong></span>
+<span class="command"><strong> mkdir /var/amavis</strong></span>
+<span class="command"><strong>mkdir /var/amavis/tmp /var/amavis/var /var/amavis/db /var/amavis/home</strong></span>
+<span class="command"><strong>chown -R amavis:amavis /var/amavis</strong></span>
+<span class="command"><strong>chmod -R 750 /var/amavis</strong></span>
+<span class="command"><strong>cp amavisd /usr/local/sbin/</strong></span>
+<span class="command"><strong>chown root /usr/local/sbin/amavisd</strong></span>
+<span class="command"><strong>cp amavisd.conf /etc/</strong></span>
+<span class="command"><strong>chown root:amavis /etc/amavisd.conf</strong></span>
+<span class="command"><strong>chmod 640 /etc/amavisd.conf</strong></span>
+<span class="command"><strong>chmod 755  /usr/local/sbin/amavisd</strong></span>
+<span class="command"><strong>mkdir /var/virusmails</strong></span>
+<span class="command"><strong>chown amavis:amavis /var/virusmails</strong></span>
+<span class="command"><strong>chmod 750 /var/virusmails</strong></span>
+</pre></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch08s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch08.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch08s04.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">2.&nbsp;&#23433;&#35013;spamassassin&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;4.&nbsp;&#23433;&#35013;dspam</td></tr></table></div></body></html>

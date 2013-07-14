@@ -1,0 +1,35 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>&#31532;&nbsp;2&nbsp;&#31456;&nbsp;smtp&#26381;&#21153;&#22120;&#19982;smtp&#30340;&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="&#25235;&#21253;&#20998;&#26512;Qmail&#30456;&#20851;&#32452;&#20214;&#30340;&#24037;&#20316;&#21407;&#29702;"><link rel="up" href="index.html" title="&#25235;&#21253;&#20998;&#26512;Qmail&#30456;&#20851;&#32452;&#20214;&#30340;&#24037;&#20316;&#21407;&#29702;"><link rel="prev" href="ch01.html" title="&#31532;&nbsp;1&nbsp;&#31456;&nbsp;qmail&#23458;&#25143;&#31471;&#20110;smtp&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">&#31532;&nbsp;2&nbsp;&#31456;&nbsp;smtp&#26381;&#21153;&#22120;&#19982;smtp&#30340;&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;</td></tr></table></div><div class="chapter" title="&#31532;&nbsp;2&nbsp;&#31456;&nbsp;smtp&#26381;&#21153;&#22120;&#19982;smtp&#30340;&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;"><div class="titlepage"><div><div><h2 class="title"><a name="d0e79"></a>&#31532;&nbsp;2&nbsp;&#31456;&nbsp;smtp&#26381;&#21153;&#22120;&#19982;smtp&#30340;&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;</h2></div></div></div><p>&#22914;&#26524;qmail&#26816;&#26597;&#20449;&#20214;&#19981;&#26159;&#26412;&#22320;&#30340;&#65292;&#37027;&#20040;&#23427;&#23601;&#35201;&#25226;&#23427;&#25237;&#36882;&#20986;&#21435;&#12290;&#36825;&#26102;&#20505;&#23601;&#24320;&#22987;&#20102;&#21644;&#21478;&#22806;&#30340;smtp&#26381;&#21153;&#22120;2.39&#30340;&#20132;&#20114;&#12290;</p><p>&#39318;&#20808;&#23427;&#20250;&#21435;&#26597;DNS&#12290;</p><p>&#31995;&#32479;&#26085;&#24535;&#35760;&#24405; </p><pre class="programlisting">Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.2.39 LEN=59 TOS=0x00 PREC=0x00 TTL=64 ID=45061 DF PROTO=UDP SPT=1027 
+DPT=53 LEN=39 
+
+Oct  8 11:30:30 liangjun kernel: lijmPOSTROUTING:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.2.39 LEN=59 TOS=0x00 PREC=0x00 TTL=64 ID=45061 DF PROTO=UDP SPT=1027 
+DPT=53 LEN=39 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:0e:0c:65:87:ba:08:00 SRC=192.168.2.39 DST=192.168.1.78 LEN=184 TOS=0x00 PREC=0x00 TTL=63 
+ID=0 DF PROTO=UDP SPT=53 DPT=1027 LEN=164 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.2.39 LEN=59 TOS=0x00 PREC=0x00 TTL=64 ID=45061 DF PROTO=UDP SPT=1027 DPT=53 
+LEN=39 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:0e:0c:65:87:ba:08:00 SRC=192.168.2.39 DST=192.168.1.78 LEN=113 TOS=0x00 PREC=0x00 TTL=63 
+ID=0 DF PROTO=UDP SPT=53 DPT=1027 LEN=93 
+
+Oct  8 11:30:30 liangjun kernel: lijmOUTPUT:IN= OUT=eth1 SRC=192.168.1.78 DST=192.168.2.39 LEN=64 TOS=0x00 PREC=0x00 TTL=64 ID=45062 DF PROTO=UDP SPT=1027 DPT=53 
+LEN=44 
+
+Oct  8 11:30:30 liangjun kernel: lijmINPUT:IN=eth1 OUT= MAC=00:04:76:01:37:2b:00:0e:0c:65:87:ba:08:00 SRC=192.168.2.39 DST=192.168.1.78 LEN=97 TOS=0x00 PREC=0x00 TTL=63 
+ID=0 DF PROTO=UDP SPT=53 DPT=1027 LEN=77  </pre><p>wireshark&#25235;&#21253;&#26174;&#31034;</p><pre class="programlisting">192.168.1.78          192.168.2.39          DNS      Standard query ANY dcux-test.com
+192.168.2.39          192.168.1.78          DNS      Standard query response SOA dcux-test.com NS ns.dcux-test.com MX 10 mail.dcux-test.com A 192.168.2.39
+192.168.1.78          192.168.2.39          DNS      Standard query MX dcux-test.com
+192.168.2.39          192.168.1.78          DNS      Standard query response MX 10 mail.dcux-test.com
+192.168.1.78          192.168.2.39          DNS      Standard query A mail.dcux-test.com
+192.168.2.39          192.168.1.78          DNS      Standard query response A 192.168.2.39</pre><p>&#24403;&#26597;&#35810;DNS&#36820;&#22238;&#35299;&#26512;&#30340;&#32467;&#26524;&#21518;&#65292;&#23427;&#23601;&#24320;&#22987;&#21644;&#35299;&#26512;&#20986;&#26469;&#30340;&#36825;&#21488;&#26426;&#23376;&#23601;&#34892;smtp&#30340;&#20132;&#20114;&#12290; &#36825;&#26102;&#20505;&#21487;&#20197;&#21442;&#32771;&#23458;&#25143;&#31471;&#19982;smtp&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;&#20102;&#65292;&#22240;&#20026;&#29616;&#22312;1.78&#36825;&#21488;&#37038;&#20214;&#26381;&#21153;&#22120;&#23601;&#34987;&#24403;&#25104;&#20102;&#23458;&#25143;&#31471;&#20102;&#65292;&#21644;2.39&#36825;&#22826;&#37038;&#20214;&#26381;&#21153;&#22120;&#36827;&#34892;&#20132;&#20114;&#12290;</p><p>&#20851;&#20110;smtp&#20132;&#20114;&#20013;&#21160;&#20316;&#30340;&#20855;&#20307;&#24847;&#20041;&#21442;&#32771;&#36825;&#20010;&#22320;&#26041;&#65306;http://cr.yp.to/smtp/ </p></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center">&nbsp;</td><td width="40%" align="right">&nbsp;</td></tr><tr><td width="40%" align="left" valign="top">&#31532;&nbsp;1&nbsp;&#31456;&nbsp;qmail&#23458;&#25143;&#31471;&#20110;smtp&#26381;&#21153;&#22120;&#30340;&#20132;&#20114;&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;</td></tr></table></div></body></html>

@@ -1,0 +1,22 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>8.&nbsp;&#23433;&#35013;postfix</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Postfix"><link rel="up" href="ch02.html" title="&#31532;&nbsp;2&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;&#23433;&#35013;"><link rel="prev" href="ch02s07.html" title="7.&nbsp;&#23433;&#35013;Cyrus SASL v2"><link rel="next" href="ch02s09.html" title="9.&nbsp;&#23433;&#35013;Courier authlib"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">8.&nbsp;&#23433;&#35013;postfix</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s07.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;2&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;mysql&#35748;&#35777;&#23433;&#35013;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch02s09.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="8.&nbsp;&#23433;&#35013;postfix"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e261"></a>8.&nbsp;&#23433;&#35013;postfix</h2></div></div></div><pre class="programlisting">
+<span class="command"><strong>groupadd postfix</strong></span>
+<span class="command"><strong>groupadd postdrop</strong></span>
+<span class="command"><strong>useradd postfix -g postfix -c "postfix user" -d /nonexistent -s /sbin/nologin</strong></span>
+<span class="command"><strong>tar zxvf postfix-2.6.5.tar.gz</strong></span>
+<span class="command"><strong>cd postfix-2.6.5</strong></span>
+<span class="command"><strong>gzip -d ../postfix-2.6.5-vda-ng-bigquota.patch.gz</strong></span>
+<span class="command"><strong>patch -p1 &lt; ../postfix-2.6.5-vda-ng-bigquota.patch</strong></span>
+<span class="command"><strong>make makefiles 'CCARGS=-DHAS_MYSQL -I/usr/local/mysql/include/mysql/ -DUSE_CYRUS_SASL -DUSE_SASL_AUTH -I/usr/local/include/sasl/ -I/usr/local/BerkeleyDB.4.8/include/ -DUSE_TLS -I/usr/local/ssl/include/' 'AUXLIBS=-L/usr/local/mysql/lib/mysql -lmysqlclient -lz -lm -L/usr/local/lib/ -lsasl2 -L/usr/local/BerkeleyDB.4.8/lib/ -L/usr/local/ssl/lib -lssl -lcrypto'</strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>make install</strong></span>
+</pre></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s07.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch02.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch02s09.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">7.&nbsp;&#23433;&#35013;Cyrus SASL v2&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;9.&nbsp;&#23433;&#35013;Courier authlib</td></tr></table></div></body></html>

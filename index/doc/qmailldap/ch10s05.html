@@ -1,0 +1,98 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>5.&nbsp;&#23433;&#35013;anti-spam</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Qmail+Ldap Guide"><link rel="up" href="ch10.html" title="&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail"><link rel="prev" href="ch10s04.html" title="4.&nbsp;&#23433;&#35013;mailman"><link rel="next" href="pt03.html" title="&#37096;&#20998;&nbsp;III.&nbsp;&#27979;&#35797;&#20351;&#29992;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">5.&nbsp;&#23433;&#35013;anti-spam</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s04.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail </th><td width="20%" align="right">&nbsp;<a accesskey="n" href="pt03.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="5.&nbsp;&#23433;&#35013;anti-spam"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e1345"></a>5.&nbsp;&#23433;&#35013;anti-spam</h2></div></div></div><div class="sect2" title="5.1.&nbsp;&#23433;&#35013;Maildrop"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1348"></a>5.1.&nbsp;&#23433;&#35013;Maildrop</h3></div></div></div><p>maildrop&#22312;&#36825;&#37324;&#23454;&#29616;&#20102;&#19968;&#20010;MDA&#30340;&#20316;&#29992;.&#36825;&#26679;&#33021;&#35753;qmail&#21644;spamassassin&#32467;&#21512; </p><pre class="programlisting">apt-get install libpcre3-dev
+cd /var/src/tar 
+wget http://prdownloads.sourceforge.net/courier/maildrop-2.0.4.tar.bz2
+cd ..
+tar jxvf tar/maildrop-2.0.4.tar.bz2
+cd maildrop-2.0.4
+./configure --enable-maildirquota
+make
+make install-strip</pre><p>&#22312;maildrop&#20998;&#21457;&#37038;&#20214;&#21069;&#22312;maildroprc&#25214;&#21040;&#24403;&#21069;&#30340;&#36807;&#28388;&#22120;&#65292;&#28982;&#21518;&#25191;&#34892;&#36825;&#20123;&#36807;&#28388;&#22120;&#65292;maildroprc&#33050;&#26412;&#40664;&#35748;&#20301;&#32622;&#26159;/etc/maildroprc or /usr/local/etc/maildroprc,&#36825;&#20010;&#33050;&#26412;&#25105;&#24314;&#35758;&#33258;&#24049;&#30475;&#30475;&#65292;&#28982;&#21518;&#25353;&#29031;&#33258;&#24049;&#23454;&#38469;&#24773;&#20917;&#36827;&#34892;&#20462;&#25913;&#12290;</p><p>vi /usr/local/etc/maildroprc  </p><pre class="programlisting">import HOME
+import MAILDIRQUOTA
+
+XBOUNCE="| bouncesaying 'Sorry, no mailbox here by that name.'"
+
+if ( $HOME eq "" )
+ {
+ to "$XBOUNCE"
+ }
+
+if (/^X-Spam-Status: Yes/)
+ {
+ to "$HOME/Maildir/.Trash/"
+ }
+
+to "$HOME/Maildir"
+</pre><pre class="programlisting">ln -s /usr/local/etc/maildroprc /etc/maildroprc 
+chmod 0750 /usr/local/var/spool/authdaemon</pre><p>&#28608;&#27963;maildrop,&#22312;&#28155;&#21152;&#25110;&#20462;&#25913;ldap&#24080;&#21495;&#30340;&#26102;&#20505;&#22686;&#21152;&#19979;&#38754;&#30340;&#20960;&#20010;attributi</p><pre class="programlisting">deliveryProgramPath: /usr/local/bin/maildrop
+qmailDotMode: ldapwithprog
+deliveryMode: nolocal </pre></div><div class="sect2" title="5.2.&nbsp;&#23433;&#35013;Maildrop"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1367"></a>5.2.&nbsp;&#23433;&#35013;Maildrop</h3></div></div></div><p>Install Spamassassin</p><pre class="programlisting">cd /var/src/tar
+wget http://apache.panu.it/spamassassin/source/Mail-SpamAssassin-3.2.3.tar.bz2
+cd ..
+tar jxvf Mail-SpamAssassin-3.2.3.tar.bz2
+cd Mail-SpamAssassin-3.2.3
+perl Makefile.PL
+make
+make install </pre><p>&#22312;debian&#20013;Install Spamassassin</p><pre class="programlisting">apt-get install spamassassin </pre><p>&#28982;&#21518;&#32534;&#36753;/usr/local/etc/openldap/schema/inetorgperson.schema &#22686;&#21152;&#19979;&#38754;&#20869;&#23481;</p><pre class="programlisting"># spamassassin
+# http://spamassassin.apache.org/ 
+attributetype ( 2.16.840.1.113730.3.1
+       DESC 'SpamAssassin user preferences settings'          
+       EQUALITY caseExactMatch          
+       NAME 'spamassassin'          
+       SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )</pre><p>&#28982;&#21518;&#25214;&#21040;&#36825;&#19968;&#34892;</p><pre class="programlisting">userSMIMECertificate $ userPKCS12 )</pre><p>&#20462;&#25913;&#25104;</p><pre class="programlisting">userSMIMECertificate $ userPKCS12 $ spamassassin )</pre><p>&#37325;&#21551;ldap&#26381;&#21153;&#65292;&#20462;&#25913;/etc/mail/spamassassin/local.cf&#65292;&#22686;&#21152;&#19979;&#38754;&#20869;&#23481;</p><pre class="programlisting">user_scores_dsn ldap://localhost:389/dc=dcux-test,dc=com?spamassassin?sub?uid=__USERNAME__ 
+user_scores_ldap_username cn=Manager,dc=dcux-test,dc=com
+user_scores_ldap_password secret</pre><p>&#21019;&#24314;&#26085;&#24535;</p><pre class="programlisting">mkdir /var/log/spamd 
+chown qmaill /var/log/spamd</pre><p>&#21019;&#24314;&#21551;&#21160;&#33050;&#26412;</p><pre class="programlisting">vi /etc/rc.spamassassin</pre><pre class="programlisting">#!/bin/sh
+
+PATH=$PATH:/usr/bin/:/usr/local/bin:/usr/local/sbin
+PIDFILE=/var/run/spamd.pid
+
+case "$1" in
+start)
+cd /
+
+/usr/sbin/spamd -x -d --ldap-config --max-spare=10 -r /var/run/spamd.pid 2&gt;&amp;1 | \
+/usr/local/bin/setuidgid qmaill \
+/usr/local/bin/multilog t n20 s1000000 /var/log/spamd &amp;
+echo "spamd started"
+;;
+
+stop)
+if [ -r ${PIDFILE} ]; then
+pid=`cat ${PIDFILE}`
+kill $pid || ( echo "failed to stop spamd" &amp;&amp; exit 1 )
+echo "spamd (pid $pid) stopped"
+else
+echo "${PIDFILE} doesn't exist, is spamd running?"
+fi
+;;
+
+restart)
+$0 stop &amp;&amp; sleep 2 &amp;&amp; $0 start
+;;
+
+*)
+echo "usage: $0 (start|stop|restart)"
+;;
+esac</pre><pre class="programlisting">chmod 700 /etc/rc.spamassassin
+/etc/rc.spamassassin start</pre></div><div class="sect2" title="5.3.&nbsp;&#23433;&#35013; spamc"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1406"></a>5.3.&nbsp;&#23433;&#35013; spamc</h3></div></div></div><p>&#22312;SpamAssassin 3.x &#30340;spamc &#30446;&#24405;&#19979;&#32534;&#35793;qmail-spamc</p><pre class="programlisting">cc -O -o qmail-spamc qmail-spamc.c
+ install -m 755 qmail-spamc /var/qmail/bin
+ln -s /var/qmail/bin/qmail-queue /usr/bin/qmail-queue
+vi /var/qmail/service/smtpd/tcp</pre><pre class="programlisting">###&#21152;&#19978;&#36825;&#19968;&#21477;
+QMAILQUEUE="/var/qmail/bin/qmail-spamc"</pre><pre class="programlisting">cd /var/qmail/service/smtpd
+make</pre></div><div class="sect2" title="5.4.&nbsp;&#28155;&#21152;&#20013;&#25991;&#36807;&#28388;&#35268;&#21017; &para; &para;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1417"></a>5.4.&nbsp;&#28155;&#21152;&#20013;&#25991;&#36807;&#28388;&#35268;&#21017; &para; &para;</h3></div></div></div><pre class="programlisting">
+cd /etc/mail/spamassassin
+wget http://www.ccert.edu.cn/spam/sa/Chinese_rules.cf
+/etc/rc.spamassassin restart
+###&#30001;&#20110;&#20013;&#25991;&#30340;&#32534;&#30721;&#30340;&#20247;&#22810;&#65292;&#25152;&#20197;&#36807;&#28388;&#20013;&#25991;&#20063;&#23601;&#35201;&#29031;&#39038;&#21040;&#25152;&#26377;&#30340;&#32534;&#30721;&#12290;
+###&#23558;Chinese_rules.cf&#20013;&#35268;&#21017;&#21478;&#23384;&#20026;&#20854;&#20182;&#30340;&#20013;&#25991;&#32534;&#30721;&#65292;&#28982;&#21518;&#35760;&#24471;&#25913;&#37324;&#38754;&#30340;&#20851;&#38190;&#23383;&#30340;&#21464;&#37327;&#21517;&#12290;
+</pre></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s04.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch10.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="pt03.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">4.&nbsp;&#23433;&#35013;mailman&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;&#37096;&#20998;&nbsp;III.&nbsp;&#27979;&#35797;&#20351;&#29992;</td></tr></table></div></body></html>

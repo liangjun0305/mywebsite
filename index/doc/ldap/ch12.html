@@ -1,0 +1,31 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>&#31532;&nbsp;12&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#37197;&#32622;</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="&#21453;&#22403;&#22334;&#37038;&#20214;&#39033;&#30446;(&#25130;&#27490;&#26085;&#26399;01&#26376;29&#26085;&#65292;&#19977;&#21608;&#26102;&#38388;)"><link rel="up" href="pt03.html" title="&#37096;&#20998;&nbsp;III.&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav"><link rel="prev" href="ch11s05.html" title="5.&nbsp;&#23433;&#35013;clamav"><link rel="next" href="ch12s02.html" title="2.&nbsp;&#37197;&#32622;dspam&#36873;&#39033;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">&#31532;&nbsp;12&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#37197;&#32622;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11s05.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#37096;&#20998;&nbsp;III.&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch12s02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="chapter" title="&#31532;&nbsp;12&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#37197;&#32622;"><div class="titlepage"><div><div><h2 class="title"><a name="d0e1817"></a>&#31532;&nbsp;12&nbsp;&#31456;&nbsp;postfix&#32467;&#21512;spamassassin&#65292;dspam&#65292;clamav&#37197;&#32622;</h2></div></div></div><div class="toc"><p><b>&#30446;&#24405;</b></p><dl><dt><span class="sect1"><a href="ch12.html#d0e1820">1. &#37197;&#32622;postfix&#36873;&#39033;</a></span></dt><dt><span class="sect1"><a href="ch12s02.html">2. &#37197;&#32622;dspam&#36873;&#39033;</a></span></dt><dt><span class="sect1"><a href="ch12s03.html">3. &#37197;&#32622;spamassassin&#36873;&#39033;</a></span></dt><dt><span class="sect1"><a href="ch12s04.html">4. &#37197;&#32622;clamav&#36873;&#39033;</a></span></dt><dt><span class="sect1"><a href="ch12s05.html">5. &#37197;&#32622;amavisd-new&#36873;&#39033;</a></span></dt></dl></div><div class="sect1" title="1.&nbsp;&#37197;&#32622;postfix&#36873;&#39033;"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e1820"></a>1.&nbsp;&#37197;&#32622;postfix&#36873;&#39033;</h2></div></div></div><p>&#20462;&#25913;main.cf</p><pre class="screen">
+content_filter = smtp-amavis:[127.0.0.1]:10024
+mynetworks = 127.0.0.0/8
+relay_domains = liangjun.com
+smtpd_recipient_restrictions = permit_mynetworks reject_unauth_destination
+transport_maps = hash:/etc/postfix/transport
+</pre><p>&#20462;&#25913;master.cf</p><pre class="screen">
+smtp-amavis unix -   -   n     -       2  smtp
+        -o smtp_data_done_timeout=1200
+        -o disable_dns_lookups=yes
+127.0.0.1:10025 inet n -       n       -       -  smtpd
+        -o content_filter=
+        -o local_recipient_maps=
+        -o relay_recipient_maps=
+        -o smtpd_restriction_classes=
+        -o smtpd_client_restrictions=
+        -o smtpd_helo_restrictions=
+        -o smtpd_sender_restrictions=
+        -o smtpd_recipient_restrictions=permit_mynetworks,reject
+        -o mynetworks=127.0.0.0/8
+</pre></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11s05.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="pt03.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch12s02.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">5.&nbsp;&#23433;&#35013;clamav&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;2.&nbsp;&#37197;&#32622;dspam&#36873;&#39033;</td></tr></table></div></body></html>

@@ -1,0 +1,82 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>3.&nbsp;PC&#33410;&#28857;&#20934;&#22791;</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Openldap &#39640;&#21487;&#29992;&#38598;&#32676;&#37197;&#32622;"><link rel="up" href="ch02.html" title="&#31532;&nbsp;2&nbsp;&#31456;&nbsp;&#20934;&#22791;&#24037;&#20316;"><link rel="prev" href="ch02s02.html" title="2.&nbsp;&#29615;&#22659;&#20171;&#32461;"><link rel="next" href="ch02s04.html" title="4.&nbsp;&#23433;&#35013;openldap"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3.&nbsp;PC&#33410;&#28857;&#20934;&#22791;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;2&nbsp;&#31456;&nbsp;&#20934;&#22791;&#24037;&#20316;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch02s04.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="3.&nbsp;PC&#33410;&#28857;&#20934;&#22791;"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e74"></a>3.&nbsp;PC&#33410;&#28857;&#20934;&#22791;</h2></div></div></div><div class="sect2" title="3.1.&nbsp;&#35774;&#32622;&#20027;&#26426;&#21517;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e77"></a>3.1.&nbsp;&#35774;&#32622;&#20027;&#26426;&#21517;</h3></div></div></div><p>master&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/HOSTNAME</strong></span><pre class="screen">master</pre><p>slave&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/HOSTNAME</strong></span><pre class="screen">slave</pre></div><div class="sect2" title="3.2.&nbsp;&#35774;&#32622;&#32593;&#32476;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e92"></a>3.2.&nbsp;&#35774;&#32622;&#32593;&#32476;</h3></div></div></div><p>master&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/sysconfig/network/ifcfg-eth0</strong></span><pre class="screen">BOOTPROTO='static'
+BROADCAST=''
+ETHTOOL_OPTIONS=''
+IPADDR='192.168.1.70/24'
+MTU=''
+NAME='82540EM Gigabit Ethernet Controller'
+NETMASK=''
+NETWORK=''
+REMOTE_IPADDR=''
+STARTMODE='auto'
+USERCONTROL='no'</pre><span class="command"><strong>vi /etc/sysconfig/network/ifcfg-eth1</strong></span><pre class="screen">BOOTPROTO='static'
+BROADCAST=''
+ETHTOOL_OPTIONS=''
+IPADDR='10.0.0.1/24'
+MTU=''
+NAME='82540EM Gigabit Ethernet Controller'
+NETMASK=''
+NETWORK=''
+REMOTE_IPADDR=''
+STARTMODE='auto'
+USERCONTROL='no'</pre><p>slave&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/sysconfig/network/ifcfg-eth0</strong></span><pre class="screen">BOOTPROTO='static'
+BROADCAST=''
+ETHTOOL_OPTIONS=''
+IPADDR='192.168.1.71/24'
+MTU=''
+NAME='82540EM Gigabit Ethernet Controller'
+NETMASK=''
+NETWORK=''
+REMOTE_IPADDR=''
+STARTMODE='auto'
+USERCONTROL='no'</pre><span class="command"><strong>vi /etc/sysconfig/network/ifcfg-eth1</strong></span><pre class="screen">BOOTPROTO='static'
+BROADCAST=''
+ETHTOOL_OPTIONS=''
+IPADDR='10.0.0.2/24'
+MTU=''
+NAME='82540EM Gigabit Ethernet Controller'
+NETMASK=''
+NETWORK=''
+REMOTE_IPADDR=''
+STARTMODE='auto'
+USERCONTROL='no'</pre></div><div class="sect2" title="3.3.&nbsp;&#35774;&#32622;&#20027;&#26426;&#21517;&#35299;&#26512;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e115"></a>3.3.&nbsp;&#35774;&#32622;&#20027;&#26426;&#21517;&#35299;&#26512;</h3></div></div></div><p>master&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/hosts</strong></span><pre class="screen">127.0.0.1       localhost
+10.0.0.1       master
+10.0.0.2       slave
+</pre><p>slave&#33410;&#28857;&#65306;</p><span class="command"><strong>vi /etc/hosts</strong></span><pre class="screen">127.0.0.1       localhost
+10.0.0.1       master
+10.0.0.2       slave</pre></div><div class="sect2" title="3.4.&nbsp;&#26816;&#27979;&#32593;&#32476;&#38142;&#25509;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e130"></a>3.4.&nbsp;&#26816;&#27979;&#32593;&#32476;&#38142;&#25509;</h3></div></div></div><p>master&#33410;&#28857;&#65306;</p><span class="command"><strong>ping -c 2 192.168.1.71</strong></span><pre class="screen">PING 192.168.1.71 (192.168.1.71) 56(84) bytes of data.
+64 bytes from 192.168.1.71: icmp_seq=1 ttl=64 time=0.499 ms
+64 bytes from 192.168.1.71: icmp_seq=2 ttl=64 time=2.10 ms
+
+--- 192.168.1.71 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1000ms
+rtt min/avg/max/mdev = 0.499/1.301/2.103/0.802 ms
+</pre><span class="command"><strong>ping -c 2 10.0.0.2</strong></span><pre class="screen">PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=4.91 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=1.69 ms
+
+--- 10.0.0.2 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1003ms
+rtt min/avg/max/mdev = 1.698/3.308/4.918/1.610 ms
+</pre><p>slave&#33410;&#28857;&#65306;</p><span class="command"><strong>ping -c 2 192.168.1.70</strong></span><pre class="screen">PING 192.168.1.70 (192.168.1.70) 56(84) bytes of data.
+64 bytes from 192.168.1.70: icmp_seq=1 ttl=64 time=0.532 ms
+64 bytes from 192.168.1.70: icmp_seq=2 ttl=64 time=0.806 ms
+
+--- 192.168.1.70 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.532/0.669/0.806/0.137 ms</pre><span class="command"><strong>ping -c 2 10.0.0.1</strong></span><pre class="screen">PING 10.0.0.1 (10.0.0.1) 56(84) bytes of data.
+64 bytes from 10.0.0.1: icmp_seq=1 ttl=64 time=1.93 ms
+64 bytes from 10.0.0.1: icmp_seq=2 ttl=64 time=2.60 ms
+
+--- 10.0.0.1 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1004ms
+rtt min/avg/max/mdev = 1.937/2.269/2.602/0.335 ms</pre></div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s02.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch02.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch02s04.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">2.&nbsp;&#29615;&#22659;&#20171;&#32461;&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;4.&nbsp;&#23433;&#35013;openldap</td></tr></table></div></body></html>

@@ -1,0 +1,439 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>2.&nbsp;&#37197;&#32622;qmail</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Qmail+Ldap Guide"><link rel="up" href="ch10.html" title="&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail"><link rel="prev" href="ch10.html" title="&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail"><link rel="next" href="ch10s03.html" title="3.&nbsp;&#23433;&#35013;&#31649;&#29702;&#37038;&#20214;&#29992;&#25143;&#30340;&#36719;&#20214;"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2.&nbsp;&#37197;&#32622;qmail</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail </th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch10s03.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="2.&nbsp;&#37197;&#32622;qmail"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e531"></a>2.&nbsp;&#37197;&#32622;qmail</h2></div></div></div><div class="sect2" title="2.1.&nbsp;&#21046;&#20316;&#21551;&#21160;&#33050;&#26412;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e534"></a>2.1.&nbsp;&#21046;&#20316;&#21551;&#21160;&#33050;&#26412;</h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>vi /var/qmail/rc </strong></span>
+#!/bin/sh
+
+# Using stdout for logging
+# Using control/defaultdelivery from qmail-local to deliver messages by default
+
+exec env - PATH="/var/qmail/bin:$PATH" \
+qmail-start "`cat /var/qmail/control/defaultdelivery`"
+
+<span class="command"><strong>vi /var/qmail/bin/qmailctl  </strong></span>
+<pre class="programlisting">
+#!/bin/sh
+
+# description: the qmail MTA
+
+PATH=/var/qmail/bin:/bin:/usr/bin:/usr/local/bin:/usr/local/sbin
+export PATH
+
+QMAILDUID=`id -u qmaild`
+NOFILESGID=`id -g qmaild`
+
+case "$1" in
+  start)
+    echo "Starting qmail"
+    if svok /service/qmail ; then
+      svc -u /service/qmail /service/qmail/log
+    else
+      echo "qmail supervise not running"
+    fi
+    if svok /service/smtpd ; then
+      svc -u /service/smtpd /service/smtpd/log
+    else
+      echo "smtpd supervise not running"
+    fi
+    if [ -d /var/lock/subsys ]; then
+      touch /var/lock/subsys/qmail
+    fi
+    if svok /service/pop3d ; then
+      svc -u /service/pop3d /service/pop3d/log
+    else
+      echo pop3d supervise not running
+    fi
+    ;;
+  stop)
+    echo "Stopping qmail..."
+    echo "  smtpd"
+    svc -d /service/smtpd /service/smtpd/log
+    echo "  qmail"
+    svc -d /service/qmail /service/qmail/log
+    if [ -f /var/lock/subsys/qmail ]; then
+      rm /var/lock/subsys/qmail
+    fi
+    echo "  pop3d"
+    svc -d /service/pop3d /service/pop3d/log
+    ;;
+  stat)
+    svstat /service/qmail
+    svstat /service/qmail/log
+    svstat /service/smtpd
+    svstat /service/smtpd/log
+    svstat /service/pop3d
+    svstat /service/pop3d/log
+    qmail-qstat
+  ;;
+  doqueue|alrm|flush)
+    echo "Flushing timeout table and sending ALRM signal to qmail."
+    /var/qmail/bin/qmail-tcpok
+    svc -a /service/qmail
+    ;;
+  queue)
+    qmail-qstat
+    qmail-qread
+    ;;
+  reload|hup)
+    echo "Sending HUP signal to qmail."
+    svc -h /service/qmail
+    ;;
+  pause)
+    echo "Pausing qmail"
+    svc -p /service/qmail
+    echo "Pausing smtpd"
+    svc -p /service/smtpd
+    echo "Pausing pop3d"
+    svc -p /service/pop3d
+    ;;
+  cont)
+    echo "Continuing qmail"
+    svc -c /service/qmail
+    echo "Continuing smtpd"
+    svc -c /service/smtpd
+    echo "Continuing pop3d"
+    svc -c /service/pop3d
+    ;;
+  restart)
+    echo "Restarting qmail:"
+    echo "* Stopping smtpd."
+    svc -d /service/smtpd /service/smtpd/log
+    echo "* Sending qmail SIGTERM and restarting."
+    svc -t /service/qmail /service/qmail/log
+    echo "* Restarting smtpd."
+    svc -u /service/smtpd /service/smtpd/log
+    echo "* Restarting pop3d."
+    svc -t /service/pop3d /service/pop3d/log
+    ;;
+  cdb)
+    tcprules /etc/tcp.smtp.cdb /etc/tcp.smtp.tmp &lt; /etc/tcp.smtp
+    chmod 644 /etc/tcp.smtp.cdb
+    echo "Reloaded /etc/tcp.smtp."
+    ;;
+  help)
+    cat &lt;&lt;HELP
+   stop -- stops mail service (smtp connections refused, nothing goes out)
+  start -- starts mail service (smtp connection accepted, mail can go out)
+  pause -- temporarily stops mail service (connections accepted, nothing leaves)
+   cont -- continues paused mail service
+   stat -- displays status of mail service
+    cdb -- rebuild the tcpserver cdb file for smtp
+restart -- stops and restarts smtp, sends qmail a TERM &amp; restarts it
+doqueue -- schedules queued messages for immediate delivery
+ reload -- sends qmail HUP, rereading locals and virtualdomains
+  queue -- shows status of queue
+   alrm -- same as doqueue
+  flush -- same as doqueue
+    hup -- same as reload
+HELP
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|doqueue|flush|reload|stat|pause|cont|cdb|queue|help}"
+    exit 1
+    ;;
+esac
+
+exit 0
+
+</pre>
+<span class="command"><strong>chmod 755 /var/qmail/bin/qmailctl</strong></span>
+<span class="command"><strong>ln -s /var/qmail/bin/qmailctl /usr/bin</strong></span>
+</pre></div><div class="sect2" title="2.2.&nbsp;&#37197;&#32622;&#25991;&#20214;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e554"></a>2.2.&nbsp;&#37197;&#32622;&#25991;&#20214; </h3></div></div></div><div class="table"><a name="d0e557"></a><p class="title"><b>&#34920;&nbsp;10.1.&nbsp;qmail&#30340;&#37197;&#32622;&#25991;&#20214;&#65292;&#37117;&#22312;/var/qmail/control&#19979;</b></p><div class="table-contents"><table summary="qmail&#30340;&#37197;&#32622;&#25991;&#20214;&#65292;&#37117;&#22312;/var/qmail/control&#19979;" cellspacing="2pt" cellpadding="2pt" style="border-collapse: collapse;border-top: 0pt margin-left: 0.5in;&#xA;            margin-right: 0.5in;&#xA;            background: #FFFFFF;&#xA;            font-size: 12px;&#xA;            border: 1px solid #000000;&#xA;   1; border-bottom: 0pt margin-left: 0.5in;&#xA;            margin-right: 0.5in;&#xA;            background: #FFFFFF;&#xA;            font-size: 12px;&#xA;            border: 1px solid #000000;&#xA;   1; border-left: 0pt margin-left: 0.5in;&#xA;            margin-right: 0.5in;&#xA;            background: #FFFFFF;&#xA;            font-size: 12px;&#xA;            border: 1px solid #000000;&#xA;   1; border-right: 0pt margin-left: 0.5in;&#xA;            margin-right: 0.5in;&#xA;            background: #FFFFFF;&#xA;            font-size: 12px;&#xA;            border: 1px solid #000000;&#xA;   1; " width="100%"><colgroup><col width="25%" align="left" class="c1"><col width="25%" align="left" class="c2"><col width="25%" align="left" class="c3"><col width="25%" align="left" class="c4"></colgroup><thead><tr><th style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&#25511;&#21046;&#25991;&#20214;</th><th style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&#20540;(&#38750;&#40664;&#35748;&#20540;&#65292;&#25353;&#29031;&#33258;&#24049;&#30340;&#23454;&#38469;&#26356;&#25913;) </th><th style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&#34987;&#29992;&#20110; </th><th style="border-bottom: 0.5pt solid #000000; " align="left"> 	&#20351;&#29992;&#30446;&#30340; </th></tr></thead><tbody><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">defaultdelivery</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&#30001;&#22823;&#23567;&#20889;&#33521;&#25991;&#23383;&#27597;&#21644;&#25968;&#23383;&#32452;&#25104;&#30340;&#23383;&#31526;&#20018;</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">  	/var/qmail/rc </td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#40664;&#35748;&#30340; .qmail &#25991;&#20214; </td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">defaultdomain</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left"> me</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">qmail-inject 	 </td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#40664;&#35748;&#30340;&#22495;&#21517;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">defaultquotacount</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">20000</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left"> &#40664;&#35748;&#36134;&#21495;&#30340;&#26368;&#22823;&#37038;&#20214;&#25968;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">defaultquotasize</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">/var/qmail/bin/dirmaker.sh</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#37038;&#31665;&#21019;&#24314;&#30340;&#33050;&#26412;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">dirmaker</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">1000000000</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#40664;&#35748;&#36134;&#21495;&#30340;&#26368;&#22823;&#23481;&#37327;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">quotawarning</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&#20320;&#30340;&#37038;&#31665;&#31354;&#38388;&#24050;&#28385;!</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#37038;&#31665;&#35686;&#21578;&#20449;&#24687;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldapbasedn</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">dc=dcux,dc=com</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">auth_imap,  auth_pop,  auth_smtp</td><td style="border-bottom: 0.5pt solid #000000; " align="left">ldap&#26381;&#21153;&#22120;&#30340;&#26681;&#30446;&#24405;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldapdefaultdotmode</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldaponly</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">ldap&#30340;&#26597;&#35810;&#26041;&#24335;(&#26377;both, dotonly, ldaponly, ldapwithprog&#22235;&#31181;&#20540;)</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldapgid</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">3000</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">auth_imap,  auth_pop,  auth_smtp</td><td style="border-bottom: 0.5pt solid #000000; " align="left">ldap&#26381;&#21153;&#36816;&#34892;&#30340;&#29992;&#25143;&#32452;ID</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldaplogin</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">cn=Manager,dc=dcux,dc=com</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">auth_imap,  auth_pop,  auth_smtp</td><td style="border-bottom: 0.5pt solid #000000; " align="left">ldap&#26381;&#21153;&#22120;&#30331;&#24405;&#30340;&#36134;&#21495;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldapmessagestore</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">/home/vmail</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#37038;&#20214;&#30340;&#23384;&#20648;&#30446;&#24405;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldapobjectclass</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">qmailuser</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">auth_imap,  auth_pop,  auth_smtp</td><td style="border-bottom: 0.5pt solid #000000; " align="left">qmail&#22312;ldap&#26381;&#21153;&#23646;&#20110;&#20160;&#20040;&#23545;&#35937;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldappassword</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">secret</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">auth_imap,  auth_pop,  auth_smtp</td><td style="border-bottom: 0.5pt solid #000000; " align="left">ldap&#26381;&#21153;&#22120;&#30331;&#24405;&#30340;&#23494;&#30721;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldaprebind</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">0</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left"> auth_imap,  auth_pop,  auth_smtp</td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#24067;&#23572;&#20540;0&#25110;1&#65292;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldapserver</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">127.0.0.1</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">ldap&#26381;&#21153;&#22120;&#30340;&#22320;&#22336;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldaptimeout</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">20</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#31561;&#24453;ldap&#26381;&#21153;&#22120;&#21709;&#24212;&#30340;&#26102;&#38388;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">ldapuid</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">3000</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">ldap&#26381;&#21153;&#36816;&#34892;&#30340;&#29992;&#25143;ID</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">localdelivery</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">0</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&nbsp;</td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#21487;&#20197;</td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">locals</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">dcux.com</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">qmail-send </td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#36827;&#34892;&#26412;&#22320;&#20256;&#36865;&#30340;&#22495; </td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">me</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">&#31995;&#32479;&#30340;&#27491;&#24335;&#22495;&#21517; FQDN(&#27492;&#25991;&#23601;&#26159;dcux.com)</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">various </td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#35768;&#22810;&#25511;&#21046;&#25991;&#20214;&#30340;&#40664;&#35748;&#35201;&#27714; </td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">plusdomain</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">me</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">qmail-inject </td><td style="border-bottom: 0.5pt solid #000000; " align="left">"+"&#21152;&#21495;&#25302;&#23614;&#22320;&#22336;&#26367;&#20195;&#30340;&#22495; </td></tr><tr><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">rcpthosts</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">me</td><td style="border-right: 0.5pt solid #000000; border-bottom: 0.5pt solid #000000; " align="left">qmail-smtpd </td><td style="border-bottom: 0.5pt solid #000000; " align="left">&#25105;&#20204;&#30340;&#20027;&#26426;&#25509;&#25910;&#37038;&#20214;&#30340;&#22495; </td></tr><tr><td style="border-right: 0.5pt solid #000000; " align="left">virtualdomains</td><td style="border-right: 0.5pt solid #000000; " align="left">lists.dcux.com:mailman(&#29992;&#20110;mailman&#37038;&#20214;&#21015;&#34920;&#30340;)</td><td style="border-right: 0.5pt solid #000000; " align="left">qmail-send </td><td style="" align="left">&#34394;&#25311;&#22495;&#21644;&#29992;&#25143; </td></tr></tbody></table></div></div><br class="table-break"></div><div class="sect2" title="2.3.&nbsp;&#37038;&#31665;&#21019;&#24314;&#33050;&#26412;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e776"></a>2.3.&nbsp;&#37038;&#31665;&#21019;&#24314;&#33050;&#26412; </h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>vi /var/qmail/bin/dirmaker.sh</strong></span>
+<pre class="programlisting">
+#!/bin/sh
+/bin/mkdir -m 700 -p $1/Maildir
+/bin/mkdir -m 700 -p $1/Maildir/new
+/bin/mkdir -m 700 -p $1/Maildir/cur
+/bin/mkdir -m 700 -p $1/Maildir/tmp
+</pre>
+<span class="command"><strong>chmod +x /var/qmail/bin/dirmaker.sh</strong></span>
+
+</pre></div><div class="sect2" title="2.4.&nbsp;&#23433;&#35013;Qmail-conf"><div class="titlepage"><div><div><h3 class="title"><a name="d0e790"></a>2.4.&nbsp;&#23433;&#35013;Qmail-conf  </h3></div></div></div><p>qmail-conf&#26159;&#19968;&#20010;&#21019;&#24314;qmail&#30340;&#26381;&#21153;&#30340;&#33050;&#26412;&#12290; </p><pre class="programlisting">
+<span class="command"><strong>cd /var/src/</strong></span>
+<span class="command"><strong>tar zxvf tar/djbdns-1.05.tar.gz</strong></span>
+<span class="command"><strong>tar zxvf tar/qmail-conf-0.60.tar.gz</strong></span>
+<span class="command"><strong>cd qmail-conf-0.60</strong></span>
+<span class="command"><strong>make -f Makefile.ini djbdns=../djbdns-1.05/</strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>make setup check</strong></span>
+<div class="note" title="&#27880;&#24847;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#27880;&#24847;]" src="themes/default/admon/note.png"></td><th align="left">&#27880;&#24847;</th></tr><tr><td align="left" valign="top">make&#26102;&#20505;&#22914;&#26524;&#26377;errno&#30340;&#38169;&#35823;&#65292;&#35831;&#36816;&#34892;<span class="command"><strong>echo gcc -O2 -include /usr/include/errno.h &gt; conf-cc</strong></span></td></tr></table></div>
+</pre></div><div class="sect2" title="2.5.&nbsp;&#21019;&#24314;qmail delivery service"><div class="titlepage"><div><div><h3 class="title"><a name="d0e823"></a>2.5.&nbsp;&#21019;&#24314;qmail delivery service   </h3></div></div></div><p> &#29992;&#21018;&#25165;&#23433;&#35013;&#30340;qmail-conf&#21019;&#24314;qmail  delivery&#26381;&#21153;</p><pre class="programlisting">
+<span class="command"><strong>cd /var/qmail/bin</strong></span>
+<span class="command"><strong>./qmail-delivery-conf qmaill /var/qmail/service/qmail</strong></span>
+<span class="command"><strong>ln -s /var/qmail/service/qmail /service</strong></span>
+<span class="command"><strong>mkdir /var/log/qmail-log</strong></span>
+<span class="command"><strong>cd /var/log/qmail-log</strong></span>
+<span class="command"><strong>ln -s /var/qmail/service/qmail/log/main qmail</strong></span>
+</pre><p>&#27979;&#35797;delivery service&#26159;&#21542;&#23433;&#35013;&#25104;&#21151;</p><pre class="programlisting">
+<span class="command"><strong>svstat /service/qmail /service/qmail/log</strong></span>
+####&#36755;&#20986;&#30340;&#32467;&#26524;&#24212;&#35813;&#31867;&#20284;&#26159;&#36825;&#26679;&#30340;:
+/service/qmail: up (pid 6345) 6 seconds
+/service/qmail/log: up (pid 6346) 5 seconds
+###check&#22810;&#27425;&#27880;&#24847;pid&#26159;&#19968;&#26679;&#30340;&#25968;&#23383;
+
+
+<span class="command"><strong>tail -f /service/qmail/log/main/current | tai64nlocal</strong></span>
+&#24212;&#35813;&#24471;&#21040;&#36825;&#26679;&#30340;&#32467;&#26524;
+status: local 0/10 remote 0/20
+
+</pre></div><div class="sect2" title="2.6.&nbsp;&#21019;&#24314;qmail SMTP service"><div class="titlepage"><div><div><h3 class="title"><a name="d0e858"></a>2.6.&nbsp;&#21019;&#24314;qmail SMTP service   </h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>cd /var/qmail/bin</strong></span>
+<span class="command"><strong>./qmail-smtpd-conf qmaild qmaill /var/qmail/service/smtpd</strong></span>
+<span class="command"><strong>cd /var/qmail/service/smtpd</strong></span>
+<span class="command"><strong>./add-relayclient 127.0.0.1 192.168.1. </strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>ln -s /var/qmail/service/smtpd /service</strong></span>
+<span class="command"><strong>cd /var/log/qmail-log</strong></span>
+<span class="command"><strong>ln -s /var/qmail/service/smtpd/log/main smtpd</strong></span>
+<p>&#27979;&#35797;SMTP service&#26159;&#21542;&#23433;&#35013;&#25104;&#21151;</p>
+<span class="command"><strong>svstat /service/smtpd /service/smtpd/log</strong></span>
+###&#36755;&#20986;&#30340;&#32467;&#26524;&#24212;&#35813;&#31867;&#20284;&#26159;&#36825;&#26679;&#30340;:
+/service/smtpd: up (pid 6345) 6 seconds
+/service/smtpd/log: up (pid 6347) 6 seconds
+###check&#22810;&#27425;&#27880;&#24847;pid&#26159;&#19968;&#26679;&#30340;&#25968;&#23383;
+<span class="command"><strong>tail -f /service/smtpd/log/main/current | tai64nlocal</strong></span>
+###&#24212;&#35813;&#24471;&#21040;&#36825;&#26679;&#30340;&#32467;&#26524;
+tcpserver: status: 0/40
+</pre><p>&#35774;&#32622;qmail SMTP&#39564;&#35777; </p><p>&#27492;&#20030;&#26159;&#38450;&#27490;&#20320;&#30340;&#37038;&#20214;&#26381;&#21153;&#22120;&#25104;&#20026;&#22403;&#22334;&#37038;&#20214;&#30340;&#20013;&#36716;&#31449;&#12290;&#23601;&#35828;&#20961;&#26159;&#38656;&#35201;&#20351;&#29992;&#20320;&#30340;&#37038;&#20214;&#26381;&#21153;&#22120;&#21457;&#37038;&#20214;&#37117;&#38656;&#35201;&#39564;&#35777;&#23427;&#30340;&#21512;&#27861;&#24615;&#12290; </p><pre class="programlisting">
+<span class="command"><strong>vi /var/qmail/service/smtpd/run</strong></span>
+<pre class="programlisting">
+/var/qmail/bin/qmail-smtpd
+
+&#25913;&#25104;
+
+/var/qmail/bin/qmail-smtpd /var/qmail/bin/auth_smtp /usr/bin/true
+</pre>
+<span class="command"><strong>vi /var/qmail/service/smtpd/tcp</strong></span>
+<pre class="programlisting">
+127.:allow,RELAYCLIENT="" 
+:allow,RCPTCHECK="",SMTPAUTH=""
+</pre>
+<span class="command"><strong>cd /var/qmail/service/smtpd</strong></span>
+<span class="command"><strong>make</strong></span>
+</pre><p>&#23558;smtp server&#35774;&#32622;&#25104;&#24102;TLS&#30340;&#23433;&#20840;&#35748;&#35777;&#30340;server,&#36825;&#26679;smtp&#23558;&#37319;&#29992;&#21152;&#23494;&#30340;&#26041;&#24335;&#20256;&#36755;&#12290;</p><pre class="programlisting">
+<span class="command"><strong>cd /var/src/qmail-1.03</strong></span>
+<span class="command"><strong>make cert</strong></span>
+<span class="command"><strong>ls -lh /var/qmail/control/cert.pem</strong></span>
+(&#27880;&#24847;&#26435;&#38480;)
+-rw-r----- 1 qmaild qmail 2.4K 2005-05-25 11:43 /var/qmail/control/cert.pem
+
+<span class="command"><strong>echo /var/qmail/control/cert.pem &gt; /var/qmail/control/smtpcert </strong></span>
+<span class="command"><strong>svc -t /service/smtpd</strong></span>
+<span class="command"><strong>echo TLSREQUIRED &gt; /service/smtpd/env/SMTPAUTH</strong></span>
+<span class="command"><strong>vi /var/qmail/service/smtpd/tcp</strong></span>
+<pre class="programlisting">
+SMTPAUTH=""
+&#25913;&#25104;
+SMTPAUTH="TLSREQUIRED"
+</pre>
+<span class="command"><strong>cd /var/qmail/service/smtpd</strong></span>
+<span class="command"><strong>make</strong></span>
+</pre></div><div class="sect2" title="2.7.&nbsp;&#21019;&#24314;qmail POP3 service"><div class="titlepage"><div><div><h3 class="title"><a name="d0e954"></a>2.7.&nbsp;&#21019;&#24314;qmail POP3 service  </h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>cd /var/qmail/bin</strong></span>
+<span class="command"><strong>./qmail-pop3d-conf /var/qmail/bin/auth_pop qmaill /var/qmail/service/pop3d</strong></span>
+<span class="command"><strong>cd /var/qmail/service/pop3d</strong></span>
+<span class="command"><strong>./add-client 192.168.1.</strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>ln -s /var/qmail/service/pop3d /service</strong></span>
+<span class="command"><strong>cd /var/log/qmail-log</strong></span>
+<span class="command"><strong>ln -s /var/qmail/service/pop3d/log/main pop3d</strong></span>
+###&#26816;&#26597;pop service
+<span class="command"><strong>svstat /service/pop3d /service/pop3d/log</strong></span>
+###&#36755;&#20986;&#30340;&#32467;&#26524;&#24212;&#35813;&#31867;&#20284;&#26159;&#36825;&#26679;&#30340;:
+</pre>
+/service/pop3d: up (pid 6345) 6 seconds
+/service/pop3d/log: up (pid 6347) 6 seconds
+<pre class="programlisting">
+###check&#22810;&#27425;&#27880;&#24847;pid&#26159;&#19968;&#26679;&#30340;&#25968;&#23383;
+<span class="command"><strong>tail -f /service/pop3d/log/main/current | tai64nlocal</strong></span>
+<pre class="programlisting">
+###&#24212;&#35813;&#24471;&#21040;&#36825;&#26679;&#30340;&#32467;&#26524;
+tcpserver: status: 0/40
+</pre>
+</pre></div><div class="sect2" title="2.8.&nbsp;&#21019;&#24314;&#19968;&#20010;&#24102;SSL&#21152;&#23494;&#20256;&#36755;&#30340;pop3 server"><div class="titlepage"><div><div><h3 class="title"><a name="d0e995"></a>2.8.&nbsp;&#21019;&#24314;&#19968;&#20010;&#24102;SSL&#21152;&#23494;&#20256;&#36755;&#30340;pop3 server   </h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>mkdir /var/qmail/service/pop3s</strong></span>
+<span class="command"><strong>mkdir /var/qmail/service/pop3s/env</strong></span>
+<span class="command"><strong>mkdir /var/qmail/service/pop3s/log</strong></span>
+<span class="command"><strong>mkdir /var/qmail/service/pop3s/log/env</strong></span>
+<span class="command"><strong>mkdir /var/qmail/service/pop3s/log/main</strong></span>
+<span class="command"><strong>chown qmaill /var/qmail/service/pop3s/log/main</strong></span>
+<span class="command"><strong>touch /var/qmail/service/pop3s/env/BACKLOG</strong></span>
+<span class="command"><strong>touch /var/qmail/service/pop3s/env/POPUPHOST</strong></span>
+<span class="command"><strong>touch /var/qmail/service/pop3s/env/DATALIMIT</strong></span>
+<span class="command"><strong>touch /var/qmail/service/pop3s/env/CONCURRENCY</strong></span>
+<span class="command"><strong>touch /var/qmail/service/pop3s/env/MAILDIRNAME</strong></span>
+<span class="command"><strong>touch /var/qmail/service/pop3s/log/env/PROCESSOR</strong></span>
+<span class="command"><strong>touch /var/qmail/service/pop3s/log/env/MAXFILESIZE</strong></span>
+<span class="command"><strong>touch /var/qmail/service/pop3s/log/env/MAXLOGFILES</strong></span>
+<span class="command"><strong>echo 0 &gt; /var/qmail/service/pop3s/env/LOCALNAME</strong></span>
+<span class="command"><strong>echo 0 &gt; /var/qmail/service/pop3s/env/IP</strong></span>
+<span class="command"><strong>echo 995 &gt; /var/qmail/service/pop3s/env/PORT</strong></span>
+<span class="command"><strong>cd /var/qmail/service/pop3s/</strong></span>
+<span class="command"><strong>cp /var/qmail/service/pop3d/Makefile .</strong></span>
+<span class="command"><strong>cp /var/qmail/service/pop3d/tcp .</strong></span>
+<span class="command"><strong>make</strong></span>
+
+<span class="command"><strong>vi /var/qmail/service/pop3s/run </strong></span>
+<pre class="programlisting">
+#!/bin/sh
+ exec 2&gt;&amp;1 \
+ envdir ./env \
+ sh -c '
+ exec \
+ softlimit ${DATALIMIT+"-d$DATALIMIT"} \
+ /usr/local/bin/tcpserver \
+ -vD"$H$R" \
+ -s \
+ ${LOCALNAME+"-l$LOCALNAME"} \
+ ${BACKLOG+"-b$BACKLOG"} \
+ ${CONCURRENCY+"-c$CONCURRENCY"} \
+ -xtcp.cdb \
+ -n /var/qmail/control/cert.pem \
+ -- "${IP-0}" "${PORT-995}" \
+ /var/qmail/bin/qmail-popup "${POPUPHOST-`sed 1q /var/qmail/control/me`}" \
+ /var/qmail/bin/auth_pop \
+ /var/qmail/bin/qmail-pop3d "${MAILDIRNAME-Maildir}"
+ '
+</pre>
+<span class="command"><strong>chmod +x /var/qmail/service/pop3s/run</strong></span>
+<span class="command"><strong>vi /var/qmail/service/pop3s/log/run </strong></span>
+<pre class="programlisting">
+#!/bin/sh
+exec \
+ setuidgid qmaill \
+ envdir ./env \
+ sh -c '
+ exec \
+ multilog \
+ t \
+ ${MAXFILESIZE+"s$MAXFILESIZE"} \
+ ${MAXLOGFILES+"n$MAXLOGFILES"} \
+ ${PROCESSOR+"!$PROCESSOR"} \
+ ./main
+ '
+</pre>
+<span class="command"><strong>chmod +x /var/qmail/service/pop3s/log/run</strong></span>
+<span class="command"><strong>ln -s /var/qmail/service/pop3s /service/pop3s </strong></span>
+<span class="command"><strong>ln -s /var/qmail/service/pop3s/log/main /var/log/qmail-log/pop3s </strong></span>
+</pre></div><div class="sect2" title="2.9.&nbsp;&#21019;&#24314;&#19968;&#20010;qmail IMAP service"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1087"></a>2.9.&nbsp;&#21019;&#24314;&#19968;&#20010;qmail IMAP service    </h3></div></div></div><pre class="programlisting">
+<span class="command"><strong>cd /var/src</strong></span>
+<span class="command"><strong>tar -xjf tar/courier-authlib-0.59.1.tar.bz2</strong></span>
+<span class="command"><strong>cd courier-authlib-0.59.1</strong></span>
+<span class="command"><strong>./configure --prefix=/usr/local/courier-imap/courier-authlib</strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>make install-strip</strong></span>
+<span class="command"><strong>make install-configure</strong></span>
+<span class="command"><strong>cp courier-authlib.sysvinit /etc/init.d/courier-authlib</strong></span>
+<span class="command"><strong>chmod 755 /etc/init.d/courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc0.d/K30courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc1.d/K30courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc2.d/S80courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc3.d/S80courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc4.d/S80courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc5.d/S80courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc6.d/K30courier-authlib</strong></span>
+
+<span class="command"><strong>vi /usr/local/etc/authlib/authldaprc </strong></span>
+<pre class="programlisting">
+LDAP_URI ldap://localhost
+LDAP_BASEDN dc=dcux-test,dc=com
+
+LDAP_BINDDN cn=Manager,dc=dcux-test,dc=com
+LDAP_BINDPW secret
+
+LDAP_MAIL mail
+LDAP_FILTER (objectClass=qmailUser)
+LDAP_GLOB_UID vmail
+LDAP_GLOB_GID vmail
+LDAP_HOMEDIR mailMessageStore
+LDAP_MAILDIR ./Maildir
+LDAP_DEFAULTDELIVERY deliveryProgramPath
+LDAP_MAILDIRQUOTA mailquotasize
+</pre>
+<div class="note" title="&#27880;&#24847;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#27880;&#24847;]" src="themes/default/admon/note.png"></td><th align="left">&#27880;&#24847;</th></tr><tr><td align="left" valign="top">&#33258;&#24049;&#23545;&#29031;&#36825;&#20123;&#36873;&#39033;&#25913;&#25104;&#31526;&#21512;&#33258;&#24049;&#30340;</td></tr></table></div>
+<span class="command"><strong>/etc/init.d/courier-authlib start</strong></span>
+<span class="command"><strong>cd /var/src</strong></span>
+<span class="command"><strong>tar -xjf tar/courier-imap-4.1.2.tar.bz2</strong></span>
+<span class="command"><strong>cd courier-imap-4.1.2</strong></span>
+<span class="command"><strong>chown -R nonroot ../courier-imap-4.1.2</strong></span>
+<span class="command"><strong>su nonroot</strong></span>
+<div class="note" title="&#27880;&#24847;" style="margin-left: 1in;&#xA;            margin-right: 1in;&#xA;            font-size: 12px;&#xA;            border: 1px solid #A7A7A7;&#xA;  "><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[&#27880;&#24847;]" src="themes/default/admon/note.png"></td><th align="left">&#27880;&#24847;</th></tr><tr><td align="left" valign="top">nonroot&#26159;&#19968;&#20010;&#38750;root&#29992;&#25143;&#65292;&#36825;&#26159;conrier-imap&#30340;&#35268;&#23450;&#12290;&#20855;&#20307;&#21407;&#22240;&#26597;&#30475;&#23427;&#30340;readme</td></tr></table></div>
+<span class="command"><strong>umask 0022</strong></span>
+<span class="command"><strong>COURIERAUTHCONFIG=/usr/local/courier-imap/courier-authlib/bin/courierauthconfig \</strong></span>
+<span class="command"><strong>CPPFLAGS=-I/usr/local/courier-imap/courier-authlib/include \</strong></span>
+<span class="command"><strong>./configure --prefix=/usr/local/courier-imap/</strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>exit</strong></span>
+<span class="command"><strong>make install-strip</strong></span>
+<span class="command"><strong>make install-configure</strong></span>
+
+<span class="command"><strong>cp courier-imap.sysvinit /etc/init.d/courier-imap</strong></span>
+<span class="command"><strong>chmod 755 /etc/init.d/courier-imap</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-imap /etc/rc0.d/K30courier-imap</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-imap /etc/rc1.d/K30courier-imap</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-imap /etc/rc2.d/S80courier-imap</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-imap /etc/rc3.d/S80courier-imap</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-imap /etc/rc4.d/S80courier-imap</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-imap /etc/rc5.d/S80courier-imap</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-imap /etc/rc6.d/K30courier-imap</strong></span>
+
+
+<span class="command"><strong>vi /usr/lib/courier-imap/etc/imapd</strong></span>
+<pre class="programlisting">
+IMAPDSTART=YES
+MAILDIRPATH=Maildir
+</pre>
+<span class="command"><strong>/etc/init.d/courier-imap start</strong></span>
+</pre></div><div class="sect2" title="2.10.&nbsp;&#21019;&#24314;&#19968;&#20010;&#24102;SSL&#21152;&#23494;&#20256;&#36755;&#30340;pop3 server"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1230"></a>2.10.&nbsp;&#21019;&#24314;&#19968;&#20010;&#24102;SSL&#21152;&#23494;&#20256;&#36755;&#30340;pop3 server</h3></div></div></div><p>&#21046;&#20316;&#35777;&#20070;</p><pre class="programlisting">
+<span class="command"><strong>cd /usr/local/courier-imap/share</strong></span>
+<span class="command"><strong>vi /usr/local/courier-imap/etc/imapd.cnf</strong></span>
+<pre class="programlisting">
+&#36825;&#37324;&#38754;&#26159;&#21046;&#20316;&#35777;&#20070;&#30340;&#19968;&#20123;&#25968;&#25454;&#12290;
+courier&#21046;&#20316;&#35777;&#20070;&#37319;&#29992;&#30340;&#33258;&#24049;&#30340;&#26041;&#27861;&#12290;&#20808;&#25226;&#35777;&#20070;&#30340;&#22522;&#26412;&#20449;&#24687;&#20889;&#36827;&#36825;&#20010;imapd.cnf&#65292;&#28982;&#21518;&#20877;&#21046;&#20316;&#12290;
+</pre>
+<span class="command"><strong>./mkimapdcert</strong></span>(&#36825;&#26159;&#21046;&#20316;&#35777;&#20070;&#30340;&#21629;&#20196;)
+<span class="command"><strong>vi /usr/local/courier-imap/etc/imapd-ssl</strong></span>
+<pre class="programlisting">
+IMAPDSSLSTART=NO
+&#25913;&#25104;
+IMAPDSSLSTART=YES
+</pre>
+<span class="command"><strong>/etc/init.d/courier-imap start</strong></span>
+</pre></div><div class="sect2" title="2.11.&nbsp;&#22312;ldap&#20013;&#28155;&#21152;qmail&#31649;&#29702;&#29992;&#25143;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1258"></a>2.11.&nbsp;&#22312;ldap&#20013;&#28155;&#21152;qmail&#31649;&#29702;&#29992;&#25143; </h3></div></div></div><p>&#22240;&#20026;qmail-ldap&#29992;&#25143;&#30340;&#23494;&#30721;&#26159;&#26126;&#25991;&#25918;&#22312;&#25991;&#20214;&#20013;&#30340;&#65292;&#20026;&#20102;&#23433;&#20840;&#36215;&#35265;,&#37319;&#29992;&#36716;&#21270;&#25104;MD5&#30340;&#25968;&#25454;&#23384;&#20648;.&#12290;</p><pre class="programlisting">
+<span class="command"><strong>/usr/local/openldap/sbin -h{MD5} -s 123456</strong></span>
+#&#24471;&#21040;&#36716;&#21270;&#25104;MD5&#30340;&#23494;&#30721;
+{MD5}4QrcOUm6Wau+VuBX8g+IPg==
+
+<span class="command"><strong>cd /usr/local/etc/openldap/schema</strong></span>
+<span class="command"><strong>vi adduser.ldif</strong></span>
+
+<pre class="programlisting">
+dn: uid=postmaster@dcux.com,dc=dcux,dc=com
+uid: postmaster@dcux.com
+objectClass: top
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: qmailUser
+cn: dcux-test MailAdmin
+sn: MailAdmin
+mailHost: dcux.com
+mail: postmaster@dcux.com
+mailQuotaSize: 10000000
+mailQuotaCount: 20000
+userPassword: {MD5}4QrcOUm6Wau+VuBX8g+IPg==   (&#21018;&#25165;&#24471;&#21040;&#30340;MD5)
+accountStatus: active
+mailMessageStore: /home/vmail/dcux.com/postmaster
+</pre>
+<span class="command"><strong>/usr/local/openldap/bin/ldapadd -D "cn=Manager,dc=dcux,dc=com" -x -W -f adduser.ldif </strong></span>
+</pre>
+&#33267;&#27492;&#65292;qmail&#30340;&#23433;&#35013;&#21644;&#37197;&#32622;&#24050;&#32463;&#23436;&#25104;&#12290;&#20320;&#21487;&#20197;&#20351;&#29992;postmaster@dcux.com&#36825;&#19968;&#20010;&#36134;&#21495;&#27979;&#35797;&#20320;&#37038;&#20214;&#26381;&#21153;&#22120;&#30340;&#23436;&#25972;&#24615;&#12290;
+</div></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch10.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch10s03.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">&#31532;&nbsp;10&nbsp;&#31456;&nbsp;&#23433;&#35013;&#21644;&#37197;&#32622;qmail &nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;3.&nbsp;&#23433;&#35013;&#31649;&#29702;&#37038;&#20214;&#29992;&#25143;&#30340;&#36719;&#20214;</td></tr></table></div></body></html>

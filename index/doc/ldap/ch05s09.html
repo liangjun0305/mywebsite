@@ -1,0 +1,27 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>9.&nbsp;&#23433;&#35013;Courier authlib</title><link rel="stylesheet" type="text/css" href="themes/default/style/style.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><link rel="home" href="index.html" title="Postfix"><link rel="up" href="ch05.html" title="&#31532;&nbsp;5&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;ldap&#35748;&#35777;&#23433;&#35013;"><link rel="prev" href="ch05s08.html" title="8.&nbsp;&#23433;&#35013;postfix"><link rel="next" href="ch05s10.html" title="10.&nbsp;&#23433;&#35013;Courier imapd"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">9.&nbsp;&#23433;&#35013;Courier authlib</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch05s08.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><th width="60%" align="center">&#31532;&nbsp;5&nbsp;&#31456;&nbsp;postfix&#20351;&#29992;ldap&#35748;&#35777;&#23433;&#35013;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ch05s10.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr></table></div><div class="sect1" title="9.&nbsp;&#23433;&#35013;Courier authlib"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e942"></a>9.&nbsp;&#23433;&#35013;Courier authlib</h2></div></div></div><pre class="programlisting">
+<span class="command"><strong>tar jxvf courier-authlib-0.63.0.tar.bz2</strong></span>
+<span class="command"><strong>cd courier-authlib-0.63.0</strong></span>
+<span class="command"><strong>./configure --prefix=/usr/local/courier-authlib  --with-mysql-libs=/usr/local/mysql/lib/mysql/ --with-mysql-includes=/usr/local/mysql/include/mysql/</strong></span>
+<span class="command"><strong>make</strong></span>
+<span class="command"><strong>make install-strip</strong></span>
+<span class="command"><strong>make install-configure</strong></span>
+<span class="command"><strong>cp courier-authlib.sysvinit /etc/init.d/courier-authlib</strong></span>
+<span class="command"><strong>chmod 755 /etc/init.d/courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc0.d/K30courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc1.d/K30courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc2.d/S80courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc3.d/S80courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc4.d/S80courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc5.d/S80courier-authlib</strong></span>
+<span class="command"><strong>ln -s ../init.d/courier-authlib /etc/rc6.d/K30courier-authlib</strong></span>
+</pre></div><br><div class="navfooter"><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch05s08.html"><img src="themes/default/navig/prev.png" alt="&#19978;&#19968;&#39029;"></a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch05.html"><img src="themes/default/navig/up.png" alt="&#19978;&#19968;&#32423;"></a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ch05s10.html"><img src="themes/default/navig/next.png" alt="&#19979;&#19968;&#39029;"></a></td></tr><tr><td width="40%" align="left" valign="top">8.&nbsp;&#23433;&#35013;postfix&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="themes/default/navig/home.png" alt="&#36215;&#22987;&#39029;"></a></td><td width="40%" align="right" valign="top">&nbsp;10.&nbsp;&#23433;&#35013;Courier imapd</td></tr></table></div></body></html>
